@@ -3,153 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONNECT AI - Biomech Assessment Protocol</title>
+    <title>ÉLITE PERFORMANCE - Biomech Assessment Protocol</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* カスタムフォントとベースカラー */
+        body { background-color: #050505; color: #e5e7eb; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        
+        /* VASスライダー（ダークテーマ用） */
+        .vas-slider { -webkit-appearance: none; width: 100%; height: 4px; background: #333; border-radius: 2px; outline: none; margin-top: 8px; }
+        .vas-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #06b6d4; cursor: pointer; box-shadow: 0 0 10px rgba(6, 182, 212, 0.5); border: 2px solid #fff; }
+        
+        /* フォーム要素のフォーカス設定 */
+        input[type="text"], input[type="number"], input[type="date"] { color-scheme: dark; }
+        
+        /* 印刷（PDF出力）時の専用スタイル（白背景・黒文字に強制リセット） */
         @media print {
-            body { background-color: white; color: black; font-size: 11pt; }
+            body { background-color: white !important; color: black !important; font-size: 11pt; }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
             .print-break-before { page-break-before: always; }
-            .print-container { width: 100%; max-width: 100%; padding: 0; margin: 0; box-shadow: none; }
+            .print-container { width: 100%; max-width: 100%; padding: 0; margin: 0; box-shadow: none; background: white !important; border: none !important; }
             .chart-box { width: 48% !important; display: inline-block; vertical-align: top; page-break-inside: avoid; margin-bottom: 15px; }
             .chart-box-full { width: 100% !important; page-break-inside: avoid; margin-bottom: 15px; }
             .charts-wrapper { display: block; width: 100%; }
+            * { border-color: #ddd !important; color: #111 !important; }
+            canvas { filter: invert(100%) hue-rotate(180deg); } /* ダーク用グラフを印刷用に反転 */
+            .print-invert-text { color: #000 !important; }
         }
         .print-only { display: none; }
-        .vas-slider { -webkit-appearance: none; width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; outline: none; }
-        .vas-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #2563eb; cursor: pointer; }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 font-sans p-4 md:p-6">
+<body class="p-4 md:p-8 selection:bg-cyan-900 selection:text-white">
 
-    <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6 print-container">
+    <div class="max-w-6xl mx-auto bg-[#0f0f11] border border-gray-800 shadow-2xl rounded-xl p-6 md:p-10 print-container">
         
-        <div class="no-print mb-6 border-b pb-4 flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-bold text-blue-900">Neuromuscular Control 評価システム</h1>
-                <p class="text-xs text-gray-500 mt-1">CONNECT AI - 3ポイント介入プロトコル・主客観データ統合管理</p>
-            </div>
-            <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition font-semibold text-sm">
-                レポートを印刷 (PDF保存)
+        <div class="no-print text-center pb-8 border-b border-gray-800 mb-8 relative">
+            <h3 class="text-[10px] tracking-[0.4em] text-gray-500 uppercase mb-3">Athletecore Pro</h3>
+            <h1 class="text-4xl md:text-5xl font-light tracking-[0.2em] text-white uppercase mb-4">
+                Élite <span class="font-medium text-gray-300">Performance</span>
+            </h1>
+            <p class="text-xs tracking-[0.3em] text-gray-400 italic">Precision in Motion</p>
+            
+            <button onclick="window.print()" class="absolute top-0 right-0 mt-4 mr-4 bg-transparent border border-gray-600 text-gray-300 px-4 py-2 rounded text-xs tracking-wider hover:bg-gray-800 hover:text-white transition uppercase">
+                Export PDF
             </button>
         </div>
 
-        <div class="print-only mb-4 border-b-2 border-blue-900 pb-2">
-            <h1 class="text-xl font-bold text-blue-900">神経筋制御（Neuromuscular Control）最適化実証レポート</h1>
-            <div class="grid grid-cols-4 gap-2 text-xs text-gray-700 mt-2">
-                <div><strong>測定日:</strong> <span id="print-date"></span></div>
-                <div><strong>被験者ID:</strong> <span id="print-id"></span></div>
-                <div><strong>氏名:</strong> <span id="print-name"></span></div>
-                <div><strong>種目 / 生年月日:</strong> <span id="print-meta"></span></div>
+        <div class="print-only mb-6 border-b-2 border-black pb-4 text-center">
+            <h3 class="text-xs tracking-[0.3em] text-gray-600 uppercase mb-1">Athletecore Pro</h3>
+            <h1 class="text-2xl font-light tracking-[0.2em] uppercase mb-2">Élite Performance Protocol</h1>
+            <div class="flex justify-center space-x-6 text-sm mt-4">
+                <div><strong>Date:</strong> <span id="print-date"></span></div>
+                <div><strong>ID:</strong> <span id="print-id"></span></div>
+                <div><strong>Name:</strong> <span id="print-name"></span></div>
+                <div><strong>Profile:</strong> <span id="print-meta"></span></div>
             </div>
         </div>
 
-        <div class="no-print flex space-x-2 mb-6">
-            <button onclick="switchTab('input')" class="px-4 py-2 bg-blue-100 text-blue-800 font-semibold rounded text-sm" id="btn-input">データ入力・問診</button>
-            <button onclick="switchTab('dashboard')" class="px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded text-sm" id="btn-dashboard">評価分析結果</button>
+        <div class="no-print flex space-x-1 mb-8 border-b border-gray-800">
+            <button onclick="switchTab('input')" class="px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-cyan-500 text-cyan-400 font-medium transition" id="btn-input">Assessment</button>
+            <button onclick="switchTab('dashboard')" class="px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-transparent text-gray-500 hover:text-gray-300 transition" id="btn-dashboard">Analytics</button>
         </div>
 
         <div id="tab-input" class="no-print">
-            <div class="space-y-6">
-                <div class="bg-gray-50 p-4 rounded border">
-                    <div class="flex justify-between items-center mb-3 border-b pb-1">
-                        <h2 class="font-bold text-base text-blue-800">1. 対象者基本情報</h2>
-                        <button onclick="openSearchModal()" class="bg-blue-700 text-white px-3 py-1 rounded text-xs hover:bg-blue-800 transition font-semibold shadow">
-                            🔍 ID / 氏名検索
+            <div class="space-y-8">
+                
+                <div class="bg-[#161618] p-6 rounded-lg border border-gray-800">
+                    <div class="flex justify-between items-center mb-5 border-b border-gray-700 pb-3">
+                        <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">1. Subject Profile</h2>
+                        <button onclick="openSearchModal()" class="text-cyan-500 border border-cyan-500/50 hover:bg-cyan-500/10 px-3 py-1.5 rounded text-xs tracking-wider transition uppercase flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            Search
                         </button>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold mb-1">被験者ID</label>
-                            <div class="flex space-x-1">
-                                <input type="text" id="sub-id" placeholder="ATH-001" class="w-full p-2 border rounded text-sm font-bold">
-                                <button onclick="loadSubjectData()" class="bg-gray-800 text-white px-2 rounded text-xs hover:bg-gray-700 whitespace-nowrap">読込</button>
+                            <label class="block text-[10px] tracking-widest text-gray-500 uppercase mb-2">Subject ID</label>
+                            <div class="flex">
+                                <input type="text" id="sub-id" placeholder="ATH-001" class="w-full p-2.5 bg-[#0a0a0a] border border-gray-700 rounded-l text-sm focus:outline-none focus:border-cyan-500 font-mono">
+                                <button onclick="loadSubjectData()" class="bg-gray-800 border border-gray-700 border-l-0 text-gray-300 px-3 rounded-r text-xs hover:bg-gray-700 transition uppercase">Load</button>
                             </div>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold mb-1">氏名</label>
-                            <input type="text" id="sub-name" placeholder="山田 太郎" class="w-full p-2 border rounded text-sm">
+                            <label class="block text-[10px] tracking-widest text-gray-500 uppercase mb-2">Name</label>
+                            <input type="text" id="sub-name" class="w-full p-2.5 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold mb-1">生年月日</label>
-                            <input type="date" id="sub-birth" class="w-full p-2 border rounded text-sm">
+                            <label class="block text-[10px] tracking-widest text-gray-500 uppercase mb-2">Birth Date</label>
+                            <input type="date" id="sub-birth" class="w-full p-2.5 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold mb-1">競技種目</label>
-                            <input type="text" id="sub-sport" placeholder="陸上短距離" class="w-full p-2 border rounded text-sm">
+                            <label class="block text-[10px] tracking-widest text-gray-500 uppercase mb-2">Category / Sport</label>
+                            <input type="text" id="sub-sport" class="w-full p-2.5 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500">
                         </div>
                     </div>
-                    <div class="mt-2"><input type="date" id="assessment-date" class="p-2 border rounded text-sm w-full md:w-auto"></div>
-                    <p id="load-status" class="text-xs text-green-600 mt-2 font-semibold hidden"></p>
+                    <div class="mt-4"><input type="date" id="assessment-date" class="p-2.5 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500"></div>
+                    <p id="load-status" class="text-xs text-cyan-400 mt-3 hidden tracking-wide"></p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-gray-50 p-4 rounded border">
-                        <h2 class="font-bold text-base mb-3 text-blue-800 border-b pb-1">2. 神経促通・主観的問診評価 (VAS 1-10)</h2>
-                        <p class="text-xs text-gray-500 mb-4">※アスリート自身が感じる特定の動作・部位での感覚ノイズを数値化</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-[#161618] p-6 rounded-lg border border-gray-800">
+                        <div class="mb-5 border-b border-gray-700 pb-3">
+                            <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">2. Neuromotor VAS (1-10)</h2>
+                            <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Sensory Noise & Brake Assessment</p>
+                        </div>
                         
-                        <div class="space-y-5">
+                        <div class="space-y-6">
                             <div>
-                                <label class="block text-xs font-semibold mb-1">Q1. 【可動域】前屈時の裏もも、または腕を挙げた時の肩・胸の突っ張り感 <br><span class="text-gray-400 font-normal">(1:全くない 〜 10:極めて強い突っ張り)</span></label>
-                                <div class="grid grid-cols-2 gap-4 mt-1">
-                                    <div><span class="text-xs text-gray-600">Pre: </span><input type="range" id="vas-pre-1" min="1" max="10" value="5" class="vas-slider"><span id="v-p1" class="text-xs ml-1">5</span></div>
-                                    <div><span class="text-xs text-gray-600">Post: </span><input type="range" id="vas-post-1" min="1" max="10" value="5" class="vas-slider"><span id="v-po1" class="text-xs ml-1">5</span></div>
+                                <label class="block text-xs font-medium text-gray-300 mb-1">Q1. 可動域 (前屈・挙上時の突っ張り感) <span class="text-gray-600 text-[10px] font-normal tracking-wide ml-2">1:皆無 ~ 10:極度</span></label>
+                                <div class="grid grid-cols-2 gap-6 mt-2">
+                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre-Test</span><span id="v-p1" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-1" min="1" max="10" value="5" class="vas-slider"></div>
+                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post-Test</span><span id="v-po1" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-1" min="1" max="10" value="5" class="vas-slider"></div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold mb-1">Q2. 【連動性】歩行やジャンプ動作時における、下半身から体幹の重さ・もたつき <br><span class="text-gray-400 font-normal">(1:非常に軽い・スムーズ 〜 10:極めて重い)</span></label>
-                                <div class="grid grid-cols-2 gap-4 mt-1">
-                                    <div><span class="text-xs text-gray-600">Pre: </span><input type="range" id="vas-pre-2" min="1" max="10" value="5" class="vas-slider"><span id="v-p2" class="text-xs ml-1">5</span></div>
-                                    <div><span class="text-xs text-gray-600">Post: </span><input type="range" id="vas-post-2" min="1" max="10" value="5" class="vas-slider"><span id="v-po2" class="text-xs ml-1">5</span></div>
+                                <label class="block text-xs font-medium text-gray-300 mb-1">Q2. 連動性 (下半身〜体幹の重さ・もたつき) <span class="text-gray-600 text-[10px] font-normal tracking-wide ml-2">1:極軽 ~ 10:極重</span></label>
+                                <div class="grid grid-cols-2 gap-6 mt-2">
+                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre-Test</span><span id="v-p2" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-2" min="1" max="10" value="5" class="vas-slider"></div>
+                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post-Test</span><span id="v-po2" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-2" min="1" max="10" value="5" class="vas-slider"></div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold mb-1">Q3. 【筋出力】足裏の接地感(捉えやすさ)と、体幹・お尻への力の伝わりやすさ <br><span class="text-gray-400 font-normal">(1:全く力が入らない/抜ける 〜 10:完璧に力が入る)</span></label>
-                                <div class="grid grid-cols-2 gap-4 mt-1">
-                                    <div><span class="text-xs text-gray-600">Pre: </span><input type="range" id="vas-pre-3" min="1" max="10" value="5" class="vas-slider"><span id="v-p3" class="text-xs ml-1">5</span></div>
-                                    <div><span class="text-xs text-gray-600">Post: </span><input type="range" id="vas-post-3" min="1" max="10" value="5" class="vas-slider"><span id="v-po3" class="text-xs ml-1">5</span></div>
+                                <label class="block text-xs font-medium text-gray-300 mb-1">Q3. 筋出力 (接地感と体幹への力の伝わり) <span class="text-gray-600 text-[10px] font-normal tracking-wide ml-2">1:抜ける ~ 10:完璧</span></label>
+                                <div class="grid grid-cols-2 gap-6 mt-2">
+                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre-Test</span><span id="v-p3" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-3" min="1" max="10" value="5" class="vas-slider"></div>
+                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post-Test</span><span id="v-po3" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-3" min="1" max="10" value="5" class="vas-slider"></div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold mb-1">Q4. 【関節】腰背部や足首、肩関節の奥で感じる「詰まり感」や違和感 <br><span class="text-gray-400 font-normal">(1:全くない・快適 〜 10:強い詰まり・違和感がある)</span></label>
-                                <div class="grid grid-cols-2 gap-4 mt-1">
-                                    <div><span class="text-xs text-gray-600">Pre: </span><input type="range" id="vas-pre-4" min="1" max="10" value="5" class="vas-slider"><span id="v-p4" class="text-xs ml-1">5</span></div>
-                                    <div><span class="text-xs text-gray-600">Post: </span><input type="range" id="vas-post-4" min="1" max="10" value="5" class="vas-slider"><span id="v-po4" class="text-xs ml-1">5</span></div>
+                                <label class="block text-xs font-medium text-gray-300 mb-1">Q4. 関節状態 (腰・足首・肩の詰まり感) <span class="text-gray-600 text-[10px] font-normal tracking-wide ml-2">1:快適 ~ 10:強詰まり</span></label>
+                                <div class="grid grid-cols-2 gap-6 mt-2">
+                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre-Test</span><span id="v-p4" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-4" min="1" max="10" value="5" class="vas-slider"></div>
+                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post-Test</span><span id="v-po4" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-4" min="1" max="10" value="5" class="vas-slider"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-gray-50 p-4 rounded border">
-                        <h2 class="font-bold text-base mb-3 text-blue-800 border-b pb-1">3. 客観的生体力学測定データ</h2>
-                        <div class="space-y-4">
+                    <div class="bg-[#161618] p-6 rounded-lg border border-gray-800 flex flex-col">
+                        <div class="mb-5 border-b border-gray-700 pb-3">
+                            <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">3. Biomechanics Data</h2>
+                            <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Objective Kinematic Metrics</p>
+                        </div>
+                        
+                        <div class="space-y-5 flex-1">
                             <div>
-                                <label class="block text-xs font-semibold mb-1">テストA: SLR可動域 (度) [Thoracic/Hip Mobility確認]</label>
-                                <div class="flex space-x-2">
-                                    <input type="number" id="pre-a" placeholder="Pre" class="w-1/2 p-2 border rounded text-sm">
-                                    <input type="number" id="post-a" placeholder="Post" class="w-1/2 p-2 border rounded text-sm">
+                                <label class="block text-xs tracking-wide text-gray-400 mb-2">Test A: SLR (度) <span class="text-gray-600 text-[10px] uppercase ml-1">Mobility</span></label>
+                                <div class="flex space-x-3">
+                                    <div class="w-1/2 relative">
+                                        <span class="absolute left-3 top-2.5 text-[10px] text-gray-600 uppercase tracking-wider">Pre</span>
+                                        <input type="number" id="pre-a" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                    </div>
+                                    <div class="w-1/2 relative">
+                                        <span class="absolute left-3 top-2.5 text-[10px] text-cyan-700 uppercase tracking-wider">Post</span>
+                                        <input type="number" id="post-a" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                    </div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold mb-1">テストB: 重心動揺面積 (cm²) [Ankle/Foot Strategy安定度]</label>
-                                <div class="flex space-x-2">
-                                    <input type="number" id="pre-b" placeholder="Pre" class="w-1/2 p-2 border rounded text-sm">
-                                    <input type="number" id="post-b" placeholder="Post" class="w-1/2 p-2 border rounded text-sm">
+                                <label class="block text-xs tracking-wide text-gray-400 mb-2">Test B: 重心動揺面積 (cm²) <span class="text-gray-600 text-[10px] uppercase ml-1">Stability</span></label>
+                                <div class="flex space-x-3">
+                                    <div class="w-1/2 relative">
+                                        <span class="absolute left-3 top-2.5 text-[10px] text-gray-600 uppercase tracking-wider">Pre</span>
+                                        <input type="number" id="pre-b" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                    </div>
+                                    <div class="w-1/2 relative">
+                                        <span class="absolute left-3 top-2.5 text-[10px] text-cyan-700 uppercase tracking-wider">Post</span>
+                                        <input type="number" id="post-b" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                    </div>
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold mb-1">テストC: 垂直跳び出力 (cm) [Kinetic Chain連動性]</label>
-                                <div class="flex space-x-2">
-                                    <input type="number" id="pre-c" placeholder="Pre" class="w-1/2 p-2 border rounded text-sm">
-                                    <input type="number" id="post-c" placeholder="Post" class="w-1/2 p-2 border rounded text-sm">
+                                <label class="block text-xs tracking-wide text-gray-400 mb-2">Test C: 垂直跳び出力 (cm) <span class="text-gray-600 text-[10px] uppercase ml-1">Output</span></label>
+                                <div class="flex space-x-3">
+                                    <div class="w-1/2 relative">
+                                        <span class="absolute left-3 top-2.5 text-[10px] text-gray-600 uppercase tracking-wider">Pre</span>
+                                        <input type="number" id="pre-c" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                    </div>
+                                    <div class="w-1/2 relative">
+                                        <span class="absolute left-3 top-2.5 text-[10px] text-cyan-700 uppercase tracking-wider">Post</span>
+                                        <input type="number" id="post-c" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <button onclick="saveAndGenerateGraphs()" class="w-full bg-green-600 text-white font-bold py-3 rounded mt-6 hover:bg-green-700 transition text-sm shadow">
-                            データを記録して評価を生成
+                        <button onclick="saveAndGenerateGraphs()" class="w-full bg-gradient-to-r from-gray-800 to-[#111] border border-cyan-800 hover:border-cyan-500 text-white font-light tracking-[0.2em] uppercase py-4 rounded mt-8 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] text-sm">
+                            Analyze Performance
                         </button>
                     </div>
                 </div>
@@ -158,69 +199,87 @@
 
         <div id="tab-dashboard" class="hidden print-block">
             <div class="charts-wrapper">
-                <div class="chart-box-full mb-6">
-                    <h2 class="font-bold text-base mb-3 border-l-4 border-blue-600 pl-2 text-gray-700">【即時効果】生体力学データ (Pre vs Post)</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-white p-2 rounded border"><canvas id="chartA"></canvas></div>
-                        <div class="bg-white p-2 rounded border"><canvas id="chartB"></canvas></div>
-                        <div class="bg-white p-2 rounded border"><canvas id="chartC"></canvas></div>
+                <div class="chart-box-full mb-8">
+                    <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text">
+                        <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Immediate Effect</h2>
+                        <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Biomechanical Metrics</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800"><canvas id="chartA"></canvas></div>
+                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800"><canvas id="chartB"></canvas></div>
+                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800"><canvas id="chartC"></canvas></div>
                     </div>
                 </div>
-                <div class="chart-box mb-6">
-                    <h2 class="font-bold text-base mb-3 border-l-4 border-blue-600 pl-2 text-gray-700">【即時効果】感覚運動統合VAS変化</h2>
-                    <div class="bg-white p-2 rounded border flex justify-center">
-                        <div class="w-full max-w-[320px]"><canvas id="radarVAS"></canvas></div>
+
+                <div class="flex flex-wrap md:flex-nowrap gap-8 mb-8">
+                    <div class="chart-box w-full md:w-1/3">
+                        <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text">
+                            <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Sensory Integration</h2>
+                            <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Subjective VAS</p>
+                        </div>
+                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800 flex justify-center">
+                            <div class="w-full max-w-[320px]"><canvas id="radarVAS"></canvas></div>
+                        </div>
                     </div>
-                </div>
-                <div class="chart-box mb-6">
-                    <h2 class="font-bold text-base mb-3 border-l-4 border-blue-600 pl-2 text-gray-700">【経過観察】神経筋制御のセッション推移</h2>
-                    <div class="bg-white p-2 rounded border" style="height: 280px;"><canvas id="historyChart"></canvas></div>
+
+                    <div class="chart-box w-full md:w-2/3">
+                        <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text">
+                            <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Long-term Progress</h2>
+                            <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Session History</p>
+                        </div>
+                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800" style="height: 320px;"><canvas id="historyChart"></canvas></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="print-break-before pt-4 border-t">
-                <h2 class="font-bold text-base mb-2 border-l-4 border-blue-600 pl-2 text-gray-700">【総括】生体力学的・神経生理学的根拠に基づく多角的考察</h2>
-                <div class="text-xs text-gray-700 leading-relaxed space-y-2">
-                    <p>本症例において認められた即時的な可動域の拡大、重心動揺の抑制、および出力効率の向上は、末梢組織の器質的変化ではなく、<strong>中枢神経系における最適フィードバック制御（Optimal Feedback Control: OFC）</strong>の最適化プロセスを示している。</p>
-                    <p>激しい運動負荷や力学的ストレスは、固有受容器からの求心性信号に微小な「感覚ノイズ」を混入させ、小脳での身体状態推定（Body State Estimation）にエラーを生じさせる。脳はこの不確実性を検知すると、防衛反応としてガンマ運動ニューロンを介し無意識にブレーキ（保護的スパズム）をかけ、関節可動域を制限する。これが主観的な「重さ」や「硬さ」の正体である。</p>
-                    <p>本プロトコルでは、交差性症候群の生体力学的ハブである「鎖骨下」「胸腰椎移行部（T12-L1）」「前脛骨筋起始部」の皮膚機械受容器（メルケル細胞・ルフィニ小体）を表面刺激した。これにより、Aβ線維経由のクリアな求心性信号が脳へ入力され、小脳の感覚予測誤差が即座にリセットされた。主観的VAS（硬さ・重さ・詰まりの低減、出力向上）と、客観的動態データ（Mobility・Stabilityの回復）が高度に同調して改善している事実は、感覚運動統合のデバッグによる<strong>神経促通と相反性神経抑制の正常化</strong>を定量的に立証している。</p>
+            <div class="print-break-before pt-6 border-t border-gray-800 print-invert-text">
+                <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase mb-4">Scientific Rationale & Review</h2>
+                <div class="text-xs text-gray-400 font-light leading-relaxed space-y-3">
+                    <p>本症例において認められた即時的な可動域の拡大、重心動揺の抑制、および出力効率の向上は、末梢組織の器質的変化ではなく、中枢神経系における最適フィードバック制御（Optimal Feedback Control: OFC）の最適化プロセスを示している。</p>
+                    <p>激しい運動負荷や力学的ストレスは、固有受容器からの求心性信号に微小な「感覚ノイズ」を混入させ、小脳での身体状態推定（Body State Estimation）にエラーを生じさせる。脳はこの不確実性を検知すると、防衛反応としてガンマ運動ニューロンを介し無意識にブレーキ（保護的スパズム）をかけ、関節可動域を制限する。</p>
+                    <p>本プロトコルでは、交差性症候群の生体力学的ハブである「鎖骨下」「胸腰椎移行部（T12-L1）」「前脛骨筋起始部」の皮膚機械受容器（メルケル細胞・ルフィニ小体）を表面刺激した。これにより、Aβ線維経由のクリアな求心性信号が脳へ入力され、小脳の感覚予測誤差が即座にリセットされた。主観的VAS（硬さ・重さ・詰まりの低減、出力向上）と、客観的動態データ（Mobility・Stabilityの回復）が高度に同調して改善している事実は、感覚運動統合のデバッグによる神経促通と相反性神経抑制の正常化を定量的に立証している。</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="search-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden justify-center items-center p-4 z-50 no-print flex">
-        <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-5 max-h-[80vh] flex flex-col">
-            <div class="flex justify-between items-center border-b pb-2 mb-3">
-                <h3 class="font-bold text-lg text-blue-900">登録者 ID / 氏名検索</h3>
-                <button onclick="closeSearchModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+    <div id="search-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50 no-print flex">
+        <div class="bg-[#111] border border-gray-800 rounded-xl shadow-2xl max-w-lg w-full p-6 max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center border-b border-gray-800 pb-3 mb-4">
+                <h3 class="font-light tracking-widest text-lg text-gray-200 uppercase">Database Search</h3>
+                <button onclick="closeSearchModal()" class="text-gray-500 hover:text-white transition text-2xl font-light">&times;</button>
             </div>
-            <input type="text" id="modal-search-query" oninput="filterSearchList()" placeholder="IDまたは氏名を入力..." class="w-full p-2 border rounded text-sm mb-3">
-            <div class="overflow-y-auto flex-1 border rounded bg-gray-50">
-                <table class="w-full text-left text-xs text-gray-600">
-                    <thead class="bg-gray-200 sticky top-0 text-gray-700">
+            <input type="text" id="modal-search-query" oninput="filterSearchList()" placeholder="Enter ID or Name..." class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded text-sm text-white focus:outline-none focus:border-cyan-500 mb-4">
+            <div class="overflow-y-auto flex-1 bg-[#0a0a0a] border border-gray-800 rounded">
+                <table class="w-full text-left text-xs text-gray-400">
+                    <thead class="bg-[#161618] sticky top-0 text-gray-300 font-light tracking-wider uppercase text-[10px]">
                         <tr>
-                            <th class="p-2">ID</th>
-                            <th class="p-2">氏名</th>
-                            <th class="p-2">競技種目</th>
-                            <th class="p-2 text-center">操作</th>
+                            <th class="p-3">ID</th>
+                            <th class="p-3">Name</th>
+                            <th class="p-3">Profile</th>
+                            <th class="p-3 text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="modal-list-tbody">
-                        </tbody>
+                    <tbody id="modal-list-tbody"></tbody>
                 </table>
-                <p id="modal-empty-msg" class="text-center py-4 text-gray-400 hidden">登録データがありません</p>
+                <p id="modal-empty-msg" class="text-center py-6 text-gray-600 hidden text-xs uppercase tracking-widest">No Data Found</p>
             </div>
         </div>
     </div>
 
     <script>
+        // Chart.jsのグローバル設定（ダークテーマ仕様）
+        Chart.defaults.color = '#9ca3af';
+        Chart.defaults.font.family = "'Helvetica Neue', 'Arial', sans-serif";
+        Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
+        Chart.defaults.scale.grid.borderColor = 'rgba(255, 255, 255, 0.1)';
+
         document.getElementById('assessment-date').valueAsDate = new Date();
-        const STORAGE_KEY = 'biomech_assessment_advanced_data';
+        const STORAGE_KEY = 'biomech_assessment_elite_data';
         let currentSubjectHistory = [];
         let charts = {};
 
-        // スライダーのリアルタイム同期
+        // スライダー同期
         ['vas-pre-1','vas-post-1','vas-pre-2','vas-post-2','vas-pre-3','vas-post-3','vas-pre-4','vas-post-4'].forEach(id => {
             const el = document.getElementById(id);
             const targetId = id.replace('vas-','v-').replace('pre-','p').replace('post-','po');
@@ -231,7 +290,7 @@
 
         function loadSubjectData() {
             const id = document.getElementById('sub-id').value.trim();
-            if (!id) { alert("被験者IDを入力してください。"); return; }
+            if (!id) return;
             const allData = getStorageData();
             
             if (allData[id]) {
@@ -239,94 +298,67 @@
                 document.getElementById('sub-birth').value = allData[id].info.birth || '';
                 document.getElementById('sub-sport').value = allData[id].info.sport || '';
                 currentSubjectHistory = allData[id].sessions || [];
-                
                 const statusEl = document.getElementById('load-status');
-                statusEl.innerText = `【成功】${allData[id].info.name} 様の過去データ（${currentSubjectHistory.length}件）を復元しました。`;
+                statusEl.innerText = `DATA LOADED: ${allData[id].info.name} (${currentSubjectHistory.length} sessions)`;
                 statusEl.classList.remove('hidden');
             } else {
-                document.getElementById('load-status').innerText = "新規被験者IDとして受け付けました。";
+                document.getElementById('load-status').innerText = "NEW SUBJECT INITIALIZED";
                 document.getElementById('load-status').classList.remove('hidden');
                 currentSubjectHistory = [];
             }
         }
 
-        // モーダルを開く
-        function openSearchModal() {
-            document.getElementById('search-modal').classList.remove('hidden');
-            document.getElementById('modal-search-query').value = '';
-            filterSearchList();
-        }
+        function openSearchModal() { document.getElementById('search-modal').classList.remove('hidden'); document.getElementById('modal-search-query').value = ''; filterSearchList(); }
+        function closeSearchModal() { document.getElementById('search-modal').classList.add('hidden'); }
 
-        // モーダルを閉じる
-        function closeSearchModal() {
-            document.getElementById('search-modal').classList.add('hidden');
-        }
-
-        // リストを絞り込み表示
         function filterSearchList() {
             const query = document.getElementById('modal-search-query').value.toLowerCase().trim();
             const allData = getStorageData();
             const tbody = document.getElementById('modal-list-tbody');
             tbody.innerHTML = '';
-
             let count = 0;
             for (const id in allData) {
                 const info = allData[id].info || {};
                 const name = info.name || '';
-                const sport = info.sport || '';
-
                 if (id.toLowerCase().includes(query) || name.toLowerCase().includes(query)) {
                     count++;
                     const tr = document.createElement('tr');
-                    tr.className = "border-b hover:bg-gray-100";
+                    tr.className = "border-b border-gray-800 hover:bg-[#161618] transition";
                     tr.innerHTML = `
-                        <td class="p-2 font-bold">${id}</td>
-                        <td class="p-2">${name}</td>
-                        <td class="p-2 text-gray-500">${sport}</td>
-                        <td class="p-2 text-center">
-                            <button onclick="selectSubject('${id}')" class="bg-blue-600 text-white px-2 py-1 rounded text-[10px] hover:bg-blue-700 font-semibold">選択</button>
-                        </td>
+                        <td class="p-3 font-mono text-cyan-500">${id}</td>
+                        <td class="p-3 text-gray-200">${name}</td>
+                        <td class="p-3 text-gray-500 text-[10px] uppercase">${info.sport || ''}</td>
+                        <td class="p-3 text-center"><button onclick="selectSubject('${id}')" class="bg-gray-800 border border-gray-600 text-gray-300 px-3 py-1 rounded text-[10px] hover:text-white transition uppercase tracking-wider">Select</button></td>
                     `;
                     tbody.appendChild(tr);
                 }
             }
-
             const emptyMsg = document.getElementById('modal-empty-msg');
-            if (count === 0) { emptyMsg.classList.remove('hidden'); }
-            else { emptyMsg.classList.add('hidden'); }
+            count === 0 ? emptyMsg.classList.remove('hidden') : emptyMsg.classList.add('hidden');
         }
 
-        // リストから選択された場合の処理
-        function selectSubject(id) {
-            document.getElementById('sub-id').value = id;
-            loadSubjectData();
-            closeSearchModal();
-        }
+        function selectSubject(id) { document.getElementById('sub-id').value = id; loadSubjectData(); closeSearchModal(); }
 
         function switchTab(tabId) {
             document.getElementById('tab-input').classList.add('hidden');
             document.getElementById('tab-dashboard').classList.add('hidden');
-            document.getElementById('btn-input').classList.replace('bg-blue-100', 'bg-gray-200');
-            document.getElementById('btn-input').classList.replace('text-blue-800', 'text-gray-700');
-            document.getElementById('btn-dashboard').classList.replace('bg-blue-100', 'bg-gray-200');
-            document.getElementById('btn-dashboard').classList.replace('text-blue-800', 'text-gray-700');
+            document.getElementById('btn-input').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-transparent text-gray-500 hover:text-gray-300 transition";
+            document.getElementById('btn-dashboard').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-transparent text-gray-500 hover:text-gray-300 transition";
 
             if (tabId === 'input') {
                 document.getElementById('tab-input').classList.remove('hidden');
-                document.getElementById('btn-input').classList.replace('bg-gray-200', 'bg-blue-100');
-                document.getElementById('btn-input').classList.replace('text-gray-700', 'text-blue-800');
+                document.getElementById('btn-input').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-cyan-500 text-cyan-400 font-medium transition";
             } else {
                 document.getElementById('tab-dashboard').classList.remove('hidden');
-                document.getElementById('btn-dashboard').classList.replace('bg-gray-200', 'bg-blue-100');
-                document.getElementById('btn-dashboard').classList.replace('text-gray-700', 'text-blue-800');
+                document.getElementById('btn-dashboard').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-cyan-500 text-cyan-400 font-medium transition";
             }
         }
 
         function saveAndGenerateGraphs() {
-            const id = document.getElementById('sub-id').value.trim() || 'GUEST-' + Math.floor(Math.random() * 1000);
-            const name = document.getElementById('sub-name').value.trim() || '未登録';
-            const birth = document.getElementById('sub-birth').value || '未設定';
-            const sport = document.getElementById('sub-sport').value.trim() || '未設定';
+            const id = document.getElementById('sub-id').value.trim() || 'GST-' + Math.floor(Math.random() * 1000);
+            const name = document.getElementById('sub-name').value.trim() || 'N/A';
+            const birth = document.getElementById('sub-birth').value || 'N/A';
+            const sport = document.getElementById('sub-sport').value.trim() || 'N/A';
             const date = document.getElementById('assessment-date').value;
 
             const preA = parseFloat(document.getElementById('pre-a').value) || 0;
@@ -348,12 +380,12 @@
             const sessionRecord = { date, preA, postA, preB, postB, preC, postC, vp1, vpo1, vp2, vpo2, vp3, vpo3, vp4, vpo4 };
 
             const allData = getStorageData();
-            if (!allData[id]) { allData[id] = { info: {}, sessions: [] }; }
+            if (!allData[id]) allData[id] = { info: {}, sessions: [] };
             allData[id].info = { name, birth, sport };
             
             const existingIndex = allData[id].sessions.findIndex(r => r.date === date);
-            if (existingIndex >= 0) { allData[id].sessions[existingIndex] = sessionRecord; }
-            else { allData[id].sessions.push(sessionRecord); }
+            if (existingIndex >= 0) allData[id].sessions[existingIndex] = sessionRecord;
+            else allData[id].sessions.push(sessionRecord);
             
             allData[id].sessions.sort((a, b) => new Date(a.date) - new Date(b.date));
             localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
@@ -362,16 +394,15 @@
             document.getElementById('print-id').innerText = id;
             document.getElementById('print-name').innerText = name;
             document.getElementById('print-date').innerText = date;
-            document.getElementById('print-meta').innerText = `${sport} / 生年月日: ${birth}`;
+            document.getElementById('print-meta').innerText = `${sport} / DOB: ${birth}`;
 
             switchTab('dashboard');
 
-            renderBarChart('chartA', '可動域: SLR (度)', preA, postA, 'rgba(54, 162, 235, 0.6)');
-            renderBarChart('chartB', '重心動揺面積 (cm²)', preB, postB, 'rgba(255, 99, 132, 0.6)', true);
-            renderBarChart('chartC', '垂直跳び出力 (cm)', preC, postC, 'rgba(75, 192, 192, 0.6)');
-            // レーダーチャートのラベルも短く具体的に変更
+            renderBarChart('chartA', 'SLR Mobility (°)', preA, postA, 'rgba(6, 182, 212, 0.8)');
+            renderBarChart('chartB', 'Sway Area (cm²)', preB, postB, 'rgba(236, 72, 153, 0.8)', true);
+            renderBarChart('chartC', 'Vertical Output (cm)', preC, postC, 'rgba(16, 185, 129, 0.8)');
             renderRadarChart([vp1, vp2, vp3, vp4], [vpo1, vpo2, vpo3, vpo4]);
-            renderHistoryChart(name, currentSubjectHistory);
+            renderHistoryChart(currentSubjectHistory);
         }
 
         function renderBarChart(canvasId, label, pre, post, color, reverseGood = false) {
@@ -379,66 +410,60 @@
             let diff = post - pre;
             let percent = pre !== 0 ? ((diff / pre) * 100).toFixed(1) : 0;
             let titleText = `${label}`;
-            
-            if(reverseGood) { if (diff < 0) titleText += ` [${Math.abs(percent)}% 改善]`; }
-            else { if (diff > 0) titleText += ` [+${percent}% 向上]`; }
+            if(reverseGood) { if (diff < 0) titleText += ` [${Math.abs(percent)}% IMP]`; }
+            else { if (diff > 0) titleText += ` [+${percent}% UP]`; }
 
-            if (charts[canvasId]) { charts[canvasId].destroy(); }
+            if (charts[canvasId]) charts[canvasId].destroy();
             charts[canvasId] = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Pre-Test', 'Post-Test'],
-                    datasets: [{ data: [pre, post], backgroundColor: ['rgba(201, 203, 207, 0.5)', color], borderWidth: 1 }]
+                    labels: ['PRE', 'POST'],
+                    datasets: [{ data: [pre, post], backgroundColor: ['rgba(255, 255, 255, 0.1)', color], borderRadius: 2 }]
                 },
-                options: { responsive: true, plugins: { title: { display: true, text: titleText, font: { size: 12 } }, legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                options: { responsive: true, plugins: { title: { display: true, text: titleText, font: { size: 11, weight: '300' }, color: '#d1d5db' }, legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
         }
 
         function renderRadarChart(preVals, postVals) {
             const ctx = document.getElementById('radarVAS').getContext('2d');
-            if (charts['radarVAS']) { charts['radarVAS'].destroy(); }
+            if (charts['radarVAS']) charts['radarVAS'].destroy();
             charts['radarVAS'] = new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    // ラベルを具体化
-                    labels: ['Q1.可動域(突っ張り)', 'Q2.連動性(重さ)', 'Q3.筋出力(接地感)', 'Q4.関節(詰まり)'],
+                    labels: ['Mobility', 'Coordination', 'Output', 'Joint State'],
                     datasets: [
-                        { label: 'Pre-Test', data: preVals, backgroundColor: 'rgba(201, 203, 207, 0.3)', borderColor: 'rgba(150, 150, 150, 0.6)', borderWidth: 1 },
-                        { label: 'Post-Test', data: postVals, backgroundColor: 'rgba(37, 99, 235, 0.2)', borderColor: 'rgb(37, 99, 235)', borderWidth: 2 }
+                        { label: 'PRE', data: preVals, backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.3)', borderWidth: 1 },
+                        { label: 'POST', data: postVals, backgroundColor: 'rgba(6, 182, 212, 0.2)', borderColor: 'rgba(6, 182, 212, 1)', borderWidth: 2, pointBackgroundColor: 'rgba(6, 182, 212, 1)' }
                     ]
                 },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { labels: { boxWidth: 12, fontSize: 10 } } },
-                    scales: { r: { min: 1, max: 10, ticks: { stepSize: 2, display: false } } }
-                }
+                options: { responsive: true, plugins: { legend: { labels: { boxWidth: 10, font: {size: 10} } } }, scales: { r: { min: 1, max: 10, ticks: { stepSize: 2, display: false }, angleLines: { color: 'rgba(255,255,255,0.1)' }, grid: { color: 'rgba(255,255,255,0.1)' } } } }
             });
         }
 
-        function renderHistoryChart(name, historyData) {
+        function renderHistoryChart(historyData) {
             const ctx = document.getElementById('historyChart').getContext('2d');
-            const labels = historyData.map(d => d.date);
+            const labels = historyData.map(d => d.date.slice(5)); // Show MM-DD
             const romData = historyData.map(d => d.postA);
             const jumpData = historyData.map(d => d.postC);
             const swayData = historyData.map(d => d.postB);
 
-            if (charts['historyChart']) { charts['historyChart'].destroy(); }
+            if (charts['historyChart']) charts['historyChart'].destroy();
             charts['historyChart'] = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'SLR可動域 (度)', data: romData, borderColor: 'rgb(54, 162, 235)', tension: 0.1, yAxisID: 'y' },
-                        { label: '垂直跳び出力 (cm)', data: jumpData, borderColor: 'rgb(75, 192, 192)', tension: 0.1, yAxisID: 'y' },
-                        { label: '重心動揺面積 (cm²)', data: swayData, borderColor: 'rgb(255, 99, 132)', tension: 0.1, yAxisID: 'y1', borderDash: [4, 4] }
+                        { label: 'Mobility', data: romData, borderColor: 'rgba(6, 182, 212, 1)', tension: 0.3, yAxisID: 'y' },
+                        { label: 'Output', data: jumpData, borderColor: 'rgba(16, 185, 129, 1)', tension: 0.3, yAxisID: 'y' },
+                        { label: 'Sway', data: swayData, borderColor: 'rgba(236, 72, 153, 1)', tension: 0.3, borderDash: [4, 4], yAxisID: 'y1' }
                     ]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { title: { display: true, text: `${name} 様の長期変化推移 (Postデータ)`, font: { size: 12 } }, legend: { labels: { boxWidth: 10 } } },
+                    plugins: { legend: { labels: { boxWidth: 10, font: {size: 10} } } },
                     scales: {
-                        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: '角度 / 出力' } },
-                        y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: '動揺面積' }, grid: { drawOnChartArea: false } }
+                        y: { type: 'linear', display: true, position: 'left' },
+                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
                     }
                 }
             });
