@@ -17,7 +17,7 @@
         /* フォーム要素のフォーカス設定 */
         input[type="text"], input[type="number"], input[type="date"] { color-scheme: dark; }
         
-        /* 印刷（PDF出力）時の専用スタイル（白背景・黒文字に強制リセット） */
+        /* 印刷（PDF出力）時の専用スタイル */
         @media print {
             body { background-color: white !important; color: black !important; font-size: 11pt; }
             .no-print { display: none !important; }
@@ -28,7 +28,7 @@
             .chart-box-full { width: 100% !important; page-break-inside: avoid; margin-bottom: 15px; }
             .charts-wrapper { display: block; width: 100%; }
             * { border-color: #ddd !important; color: #111 !important; }
-            canvas { filter: invert(100%) hue-rotate(180deg); } /* ダーク用グラフを印刷用に反転 */
+            canvas { filter: invert(100%) hue-rotate(180deg); } 
             .print-invert-text { color: #000 !important; }
         }
         .print-only { display: none; }
@@ -46,7 +46,7 @@
             </label>
             <button onclick="exportData()" class="bg-transparent border border-cyan-800 text-cyan-500 px-3 py-1.5 rounded text-[10px] tracking-wider hover:bg-cyan-900 hover:text-white transition uppercase flex items-center">
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                Save (Export)
+                Save
             </button>
             <button onclick="window.print()" class="bg-transparent border border-gray-600 text-gray-400 px-3 py-1.5 rounded text-[10px] tracking-wider hover:bg-gray-800 hover:text-white transition uppercase flex items-center">
                 PDF
@@ -128,99 +128,124 @@
                     <p id="load-status" class="text-xs text-cyan-400 mt-3 hidden tracking-wide"></p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-[#161618] p-6 rounded-lg border border-gray-800 flex flex-col">
-                        <div class="mb-5 border-b border-gray-700 pb-3 relative">
-                            <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">2. Neuromotor VAS (1-10)</h2>
-                            <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Sensorimotor Integration Assessment</p>
-                            <p class="text-[10px] text-orange-500 mt-1 uppercase tracking-wider">※スケール統一：10=最適、1=機能不全</p>
+                <div class="bg-[#161618] p-6 rounded-lg border border-gray-800">
+                    <div class="mb-5 border-b border-gray-700 pb-3 relative">
+                        <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">2. Neuromotor VAS (1-10)</h2>
+                        <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Sensorimotor Integration Assessment</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Q1. 可動域・突っ張り感 <span class="text-gray-500 text-[10px] tracking-wide ml-1">[胸郭・裏もも・肩胸]</span></label>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre</span><span id="v-p1" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-1" min="1" max="10" value="5" class="vas-slider"></div>
+                                <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post</span><span id="v-po1" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-1" min="1" max="10" value="5" class="vas-slider"></div>
+                            </div>
                         </div>
-                        
-                        <div class="space-y-5 flex-1">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Q2. 連動性・重さ・もたつき <span class="text-gray-500 text-[10px] tracking-wide ml-1">[歩行・ジャンプ時の体幹]</span></label>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre</span><span id="v-p2" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-2" min="1" max="10" value="5" class="vas-slider"></div>
+                                <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post</span><span id="v-po2" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-2" min="1" max="10" value="5" class="vas-slider"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Q3. 筋出力・接地感 <span class="text-gray-500 text-[10px] tracking-wide ml-1">[足裏の捉え・力の伝わり]</span></label>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre</span><span id="v-p3" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-3" min="1" max="10" value="5" class="vas-slider"></div>
+                                <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post</span><span id="v-po3" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-3" min="1" max="10" value="5" class="vas-slider"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-300 mb-1">Q4. 関節詰まり・違和感 <span class="text-gray-500 text-[10px] tracking-wide ml-1">[腰椎帯・足首・肩関節]</span></label>
+                            <div class="grid grid-cols-2 gap-4 mt-2">
+                                <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre</span><span id="v-p4" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-4" min="1" max="10" value="5" class="vas-slider"></div>
+                                <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post</span><span id="v-po4" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-4" min="1" max="10" value="5" class="vas-slider"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#161618] p-6 rounded-lg border border-gray-800 flex flex-col">
+                    <div class="mb-5 border-b border-gray-700 pb-3 relative">
+                        <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">3. Biomechanics Data (6 Metrics)</h2>
+                        <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Objective Kinematic Metrics & Joint-by-Joint Evidence</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-xs text-cyan-500 uppercase tracking-widest mb-4 border-l-2 border-cyan-500 pl-2">Mobility Metrics</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-xs font-medium text-gray-300 mb-1">Q1. 可動域・突っ張り感 <span class="text-gray-500 text-[10px] tracking-wide ml-1">[胸郭・裏もも・肩胸]</span><br><span class="text-gray-600 text-[10px] font-normal tracking-wide">1:強い突っ張り/制限あり ~ 10:極めて滑らか・皆無</span></label>
-                                <div class="grid grid-cols-2 gap-6 mt-2">
-                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre-Test</span><span id="v-p1" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-1" min="1" max="10" value="5" class="vas-slider"></div>
-                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post-Test</span><span id="v-po1" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-1" min="1" max="10" value="5" class="vas-slider"></div>
+                                <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
+                                    Test A: 立位体前屈 FFD (cm)
+                                    <button onclick="openTestInfoModal('A')" class="ml-2 text-cyan-600 hover:text-cyan-400 transition" title="詳細解説"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input type="number" id="pre-a" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                    <input type="number" id="post-a" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-300 mb-1">Q2. 連動性・重さ・もたつき <span class="text-gray-500 text-[10px] tracking-wide ml-1">[歩行・ジャンプ時の体幹]</span><br><span class="text-gray-600 text-[10px] font-normal tracking-wide">1:非常に重い・もたつく ~ 10:非常に軽い・スムーズ</span></label>
-                                <div class="grid grid-cols-2 gap-6 mt-2">
-                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre-Test</span><span id="v-p2" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-2" min="1" max="10" value="5" class="vas-slider"></div>
-                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post-Test</span><span id="v-po2" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-2" min="1" max="10" value="5" class="vas-slider"></div>
+                                <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
+                                    Test B: 肩関節屈曲 (度)
+                                    <button onclick="openTestInfoModal('B')" class="ml-2 text-cyan-600 hover:text-cyan-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input type="number" id="pre-b" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                    <input type="number" id="post-b" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-300 mb-1">Q3. 筋出力・接地感 <span class="text-gray-500 text-[10px] tracking-wide ml-1">[足裏の捉え・力の伝わり]</span><br><span class="text-gray-600 text-[10px] font-normal tracking-wide">1:全く入らない/抜ける ~ 10:完璧に力が入る</span></label>
-                                <div class="grid grid-cols-2 gap-6 mt-2">
-                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre-Test</span><span id="v-p3" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-3" min="1" max="10" value="5" class="vas-slider"></div>
-                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post-Test</span><span id="v-po3" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-3" min="1" max="10" value="5" class="vas-slider"></div>
+                                <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
+                                    Test C: 座位胸郭回旋 (度)
+                                    <button onclick="openTestInfoModal('C')" class="ml-2 text-cyan-600 hover:text-cyan-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input type="number" id="pre-c" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                    <input type="number" id="post-c" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-medium text-gray-300 mb-1">Q4. 関節詰まり・違和感 <span class="text-gray-500 text-[10px] tracking-wide ml-1">[腰椎帯・足首・肩関節の奥]</span><br><span class="text-gray-600 text-[10px] font-normal tracking-wide">1:強い詰まり/違和感あり ~ 10:全くない・快適</span></label>
-                                <div class="grid grid-cols-2 gap-6 mt-2">
-                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Pre-Test</span><span id="v-p4" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-pre-4" min="1" max="10" value="5" class="vas-slider"></div>
-                                    <div class="bg-[#0a0a0a] p-3 border border-gray-800 rounded"><span class="text-[10px] text-gray-500 uppercase tracking-widest">Post-Test</span><span id="v-po4" class="float-right text-cyan-400 font-mono text-sm">5</span><input type="range" id="vas-post-4" min="1" max="10" value="5" class="vas-slider"></div>
+                                <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
+                                    Test D: 荷重位足関節背屈 (cm)
+                                    <button onclick="openTestInfoModal('D')" class="ml-2 text-cyan-600 hover:text-cyan-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input type="number" id="pre-d" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                    <input type="number" id="post-d" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="bg-[#161618] p-6 rounded-lg border border-gray-800 flex flex-col relative">
-                        <div class="mb-5 border-b border-gray-700 pb-3 relative">
-                            <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">3. Biomechanics Data</h2>
-                            <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Objective Kinematic Metrics</p>
-                            <p class="text-[10px] text-orange-500 mt-1 uppercase tracking-wider">※TestB：ふらつきAREA→保持時間(秒)へ変更</p>
-                        </div>
-                        
-                        <div class="space-y-5 flex-1 relative z-0">
+                    <div>
+                        <h3 class="text-xs text-pink-500 uppercase tracking-widest mb-4 border-l-2 border-pink-500 pl-2">Performance & Stability</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-xs tracking-wide text-gray-400 mb-2">Test A: SLR角度 (度) [Thoracic/Hip Mobility確認]</label>
-                                <div class="flex space-x-3">
-                                    <div class="w-1/2 relative">
-                                        <span class="absolute left-3 top-2.5 text-[10px] text-gray-600 uppercase tracking-wider">Pre</span>
-                                        <input type="number" id="pre-a" placeholder="Pre" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
-                                    </div>
-                                    <div class="w-1/2 relative">
-                                        <span class="absolute left-3 top-2.5 text-[10px] text-cyan-700 uppercase tracking-wider">Post</span>
-                                        <input type="number" id="post-a" placeholder="Post" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
-                                    </div>
+                                <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
+                                    Test E: 閉眼片脚立位 (秒)
+                                    <button onclick="openTestInfoModal('E')" class="ml-2 text-pink-600 hover:text-pink-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input type="number" id="pre-e" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right">
+                                    <input type="number" id="post-e" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right text-pink-100">
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-xs tracking-wide text-gray-400 mb-2">Test B: 閉眼片脚立位 保持時間 (秒) [Ankle/Foot Strategy安定度]</label>
-                                <div class="flex space-x-3 relative z-0">
-                                    <div class="w-1/2 relative">
-                                        <span class="absolute left-3 top-2.5 text-[10px] text-gray-600 uppercase tracking-wider">Pre</span>
-                                        <input type="number" id="pre-b" placeholder="Pre" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
-                                    </div>
-                                    <div class="w-1/2 relative">
-                                        <span class="absolute left-3 top-2.5 text-[10px] text-cyan-700 uppercase tracking-wider">Post</span>
-                                        <input type="number" id="post-b" placeholder="Post" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs tracking-wide text-gray-400 mb-2">Test C: 垂直跳び出力 (cm) [Kinetic Chain連動性]</label>
-                                <div class="flex space-x-3">
-                                    <div class="w-1/2 relative">
-                                        <span class="absolute left-3 top-2.5 text-[10px] text-gray-600 uppercase tracking-wider">Pre</span>
-                                        <input type="number" id="pre-c" placeholder="Pre" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
-                                    </div>
-                                    <div class="w-1/2 relative">
-                                        <span class="absolute left-3 top-2.5 text-[10px] text-cyan-700 uppercase tracking-wider">Post</span>
-                                        <input type="number" id="post-c" placeholder="Post" class="w-full p-2.5 pl-12 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
-                                    </div>
+                                <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
+                                    Test F: CMJ 垂直跳び (cm)
+                                    <button onclick="openTestInfoModal('F')" class="ml-2 text-pink-600 hover:text-pink-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+                                </label>
+                                <div class="flex space-x-2">
+                                    <input type="number" id="pre-f" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right">
+                                    <input type="number" id="post-f" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right text-pink-100">
                                 </div>
                             </div>
                         </div>
-
-                        <button onclick="saveAndGenerateGraphs()" class="w-full bg-gradient-to-r from-gray-800 to-[#111] border border-cyan-800 hover:border-cyan-500 text-white font-light tracking-[0.2em] uppercase py-4 rounded mt-8 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] text-sm">
-                            Analyze Performance (Save)
-                        </button>
                     </div>
+
+                    <button onclick="saveAndGenerateGraphs()" class="w-full bg-gradient-to-r from-gray-800 to-[#111] border border-cyan-800 hover:border-cyan-500 text-white font-light tracking-[0.2em] uppercase py-4 rounded mt-8 transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] text-sm">
+                        Analyze Elite Performance (Save)
+                    </button>
                 </div>
             </div>
         </div>
@@ -229,13 +254,17 @@
             <div class="charts-wrapper relative z-0">
                 <div class="chart-box-full mb-8 relative z-0">
                     <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text">
-                        <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Immediate Effect</h2>
-                        <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1">Biomechanical Metrics</p>
+                        <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Immediate Biomechanical Effect</h2>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-0">
-                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800"><canvas id="chartA"></canvas></div>
-                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800"><canvas id="chartB"></canvas></div>
-                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800"><canvas id="chartC"></canvas></div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                        <div class="bg-[#161618] p-3 rounded-lg border border-gray-800"><canvas id="chartA"></canvas></div>
+                        <div class="bg-[#161618] p-3 rounded-lg border border-gray-800"><canvas id="chartB"></canvas></div>
+                        <div class="bg-[#161618] p-3 rounded-lg border border-gray-800"><canvas id="chartC"></canvas></div>
+                        <div class="bg-[#161618] p-3 rounded-lg border border-gray-800"><canvas id="chartD"></canvas></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800"><canvas id="chartE"></canvas></div>
+                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800"><canvas id="chartF"></canvas></div>
                     </div>
                 </div>
 
@@ -243,7 +272,6 @@
                     <div class="chart-box w-full md:w-1/3 relative z-0">
                         <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text relative z-10">
                             <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Sensory Integration</h2>
-                            <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1 relative z-10">Subjective VAS</p>
                         </div>
                         <div class="bg-[#161618] p-4 rounded-lg border border-gray-800 flex justify-center relative z-0">
                             <div class="w-full max-w-[320px] relative z-0"><canvas id="radarVAS"></canvas></div>
@@ -253,7 +281,6 @@
                     <div class="chart-box w-full md:w-2/3 relative z-0">
                         <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text relative z-10">
                             <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Long-term Progress</h2>
-                            <p class="text-[10px] tracking-widest text-gray-500 uppercase mt-1 relative z-10">Session History</p>
                         </div>
                         <div class="bg-[#161618] p-4 rounded-lg border border-gray-800 relative z-0" style="height: 320px;"><canvas id="historyChart"></canvas></div>
                     </div>
@@ -265,7 +292,7 @@
                 <div class="text-xs text-gray-400 font-light leading-relaxed space-y-3 relative z-10">
                     <p>本症例において認められた即時的な可動域の拡大、重心動揺の抑制（片脚立位時間の延長）、および出力効率の向上は、末梢組織の器質的変化ではなく、中枢神経系における最適フィードバック制御（Optimal Feedback Control: OFC）の最適化プロセスを示している。</p>
                     <p>激しい運動負荷や力学的ストレスは、固有受容器からの求心性信号に微小な「感覚ノイズ」を混入させ、小脳での身体状態推定（Body State Estimation）にエラーを生じさせる。脳はこの不確実性を検知すると、防衛反応としてガンマ運動ニューロンを介し無意識にブレーキ（保護的スパズム）をかけ、関節可動域を制限する。</p>
-                    <p>本プロトコルでは、交差性症候群の生体力学的ハブである「鎖骨下」「胸腰椎移行部（T12-L1）」「前脛骨筋起始部」の皮膚機械受容器（メルケル細胞・ルフィニ小体）を表面刺激した。これにより、Aβ線維経由のクリアな求心性信号が脳へ入力され、小脳の感覚予測誤差が即座にリセットされた。主観적VAS（モビリティ・スタビリティ・連動性の向上）と、客観的動態データが高度に同調して改善している事実は、感覚運動統合のデバッグによる神経促通と相反性神経抑制の正常化を定量的に立証している。</p>
+                    <p>本プロトコルでは、交差性症候群の生体力学的ハブである「鎖骨下」「胸腰椎移行部（T12-L1）」「前脛骨筋起始部」の皮膚機械受容器（メルケル細胞・ルフィニ小体）を表面刺激した。これにより、Aβ線維経由のクリアな求心性信号が脳へ入力され、小脳の感覚予測誤差が即座にリセットされた。主観的VASと、客観的動態データ（前屈・回旋・背屈等）が高度に同調して改善している事実は、感覚運動統合のデバッグによる神経促通と相反性神経抑制の正常化を定量的に立証している。</p>
                 </div>
             </div>
         </div>
@@ -275,18 +302,13 @@
         <div class="bg-[#111] border border-gray-800 rounded-xl shadow-2xl max-w-lg w-full p-6 max-h-[80vh] flex flex-col relative">
             <div class="flex justify-between items-center border-b border-gray-800 pb-3 mb-4">
                 <h3 class="font-light tracking-widest text-lg text-gray-200 uppercase">Database Search</h3>
-                <button onclick="closeSearchModal()" class="text-gray-500 hover:text-white transition text-3xl font-light绝对 top-2 right-4">&times;</button>
+                <button onclick="closeSearchModal()" class="text-gray-500 hover:text-white transition text-3xl font-light absolute top-2 right-4">&times;</button>
             </div>
             <input type="text" id="modal-search-query" oninput="filterSearchList()" placeholder="Enter ID or Name..." class="w-full p-3 bg-[#0a0a0a] border border-gray-700 rounded text-sm text-white focus:outline-none focus:border-cyan-500 mb-4">
             <div class="overflow-y-auto flex-1 bg-[#0a0a0a] border border-gray-800 rounded">
                 <table class="w-full text-left text-xs text-gray-400">
                     <thead class="bg-[#161618] sticky top-0 text-gray-300 font-light tracking-wider uppercase text-[10px]">
-                        <tr>
-                            <th class="p-3">ID</th>
-                            <th class="p-3">Name</th>
-                            <th class="p-3">Profile</th>
-                            <th class="p-3 text-center">Action</th>
-                        </tr>
+                        <tr><th class="p-3">ID</th><th class="p-3">Name</th><th class="p-3">Profile</th><th class="p-3 text-center">Action</th></tr>
                     </thead>
                     <tbody id="modal-list-tbody"></tbody>
                 </table>
@@ -307,15 +329,32 @@
         </div>
     </div>
 
+    <div id="test-info-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden justify-center items-center p-4 z-50 no-print flex">
+        <div class="bg-[#111] border border-cyan-900 rounded-xl shadow-2xl max-w-md w-full p-6 flex flex-col relative">
+            <button onclick="closeTestInfoModal()" class="text-gray-500 hover:text-white transition text-3xl font-light absolute top-2 right-4">&times;</button>
+            <h3 id="test-info-title" class="font-medium tracking-wide text-lg text-cyan-400 mb-2 border-b border-gray-800 pb-2"></h3>
+            <div class="text-sm text-gray-300 leading-relaxed space-y-4 mt-2">
+                <div>
+                    <h4 class="text-[10px] text-cyan-700 uppercase tracking-widest mb-1">【測定方法・目的】</h4>
+                    <p id="test-info-desc"></p>
+                </div>
+                <div class="bg-[#161618] p-3 rounded border border-gray-800">
+                    <h4 class="text-[10px] text-pink-700 uppercase tracking-widest mb-1">【生体力学的根拠・ハブの作用】</h4>
+                    <p id="test-info-rationale" class="text-xs text-gray-400"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Chart.jsのグローバル設定（ダークテーマ仕様）
+        // Chart.jsのグローバル設定
         Chart.defaults.color = '#9ca3af';
         Chart.defaults.font.family = "'Helvetica Neue', 'Arial', sans-serif";
         Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
         Chart.defaults.scale.grid.borderColor = 'rgba(255, 255, 255, 0.1)';
 
         document.getElementById('assessment-date').valueAsDate = new Date();
-        const STORAGE_KEY = 'biomech_assessment_elite_v3_data'; 
+        const STORAGE_KEY = 'biomech_assessment_elite_v4_data'; 
         let currentSubjectHistory = [];
         let charts = {};
 
@@ -326,6 +365,50 @@
             el.addEventListener('input', () => { document.getElementById(targetId).innerText = el.value; });
         });
 
+        // --- テスト解説データ (A-F) ---
+        const testInfoData = {
+            'A': {
+                title: 'Test A: 立位体前屈 (FFD)',
+                desc: '膝を伸ばした状態で前屈し、床から指先までの距離（cm）を測定します。届かない場合はマイナス、手のひらがつく等通り過ぎる場合はプラス評価とします。後面チェーン（Posterior Chain）全体の連動性を評価します。',
+                rationale: '【胸腰椎移行部ハブへの介入効果】\nT12-L1領域の胸腰筋膜や広背筋のテンションが最適化されることで、下位交差性症候群における腰部の保護的スパズム（脳の無意識のブレーキ）が解除され、骨盤の前傾とハムストリングスの伸張が即座に引き出されます。'
+            },
+            'B': {
+                title: 'Test B: 肩関節屈曲 (度)',
+                desc: '仰臥位または立位で腕を前方から頭上へ限界まで挙上（バンザイ）した角度を測定します。肩甲帯および胸椎の伸展モビリティを評価します。',
+                rationale: '【鎖骨下ハブへの介入効果】\n上位交差性症候群で短縮・過緊張を起こしやすい小胸筋・大胸筋上の皮膚受容器を持続刺激することで、相反性神経抑制が正常化します。肩甲骨が正しい後傾・上方回旋ポジションに収まり、インピンジメント（詰まり）なく挙上角度が拡大します。'
+            },
+            'C': {
+                title: 'Test C: 座位胸郭回旋 (度)',
+                desc: '椅子に座り（骨盤を固定した状態）、バーを肩に担いで左右に限界まで身体を捻った角度を測定します。胸椎の純粋な回旋モビリティを評価します。',
+                rationale: '【胸腰椎・鎖骨下ハブの統合効果】\n Joint-by-Jointセオリーにおいて、本来高い可動性を持つべき「胸椎」のロックが外れるかを検証します。大胸筋の過緊張緩和と、胸腰椎移行部のテンション解放が組み合わさることで、ゴルフや野球など回旋系スポーツの出力に直結する滑らかなローテーションが回復します。'
+            },
+            'D': {
+                title: 'Test D: 荷重位足関節背屈 (cm)',
+                desc: '壁に向かって立ち、踵を床から浮かせずに膝を壁につけられる「つま先から壁までの最大距離（cm）」を測定します。荷重下での足関節のモビリティを評価します。',
+                rationale: '【前脛骨筋ハブへの介入効果】\n足関節の背屈動作時における、距骨の後方滑り（ロール＆グライド）のブレーキを解除します。前脛骨筋起始部からのクリアな感覚入力により足関節戦略（Ankle Strategy）が最適化され、スクワット時の過回内（Over-pronation）やニーイン（Knee-in）を防ぎます。'
+            },
+            'E': {
+                title: 'Test E: 閉眼片脚立位 (秒)',
+                desc: '視覚情報を遮断（目を閉じる）し、片脚でバランスを保ち続けられる時間（秒）を測定します。固有受容感覚と姿勢制御の自律性を評価します。',
+                rationale: '【中枢神経系のエラー修正】\n視覚に頼れない状況下では、足裏や関節からの体性感覚フィードバックへの依存度が高まります。3つのハブから脳へクリアな安全信号（ノイズのない求心性情報）が送られることで小脳での身体状態推定が安定し、重心動揺が劇的に減少（タイムが延長）します。'
+            },
+            'F': {
+                title: 'Test F: CMJ 垂直跳び出力 (cm)',
+                desc: '反動を用いた垂直跳び（Counter Movement Jump）の高さを測定します。全身のキネティックチェーン（運動連鎖）の出力効率を評価します。',
+                rationale: '【相反性神経抑制と連動性の正常化】\n関節ごとのモビリティとスタビリティの破綻が修正されることで、各関節の不必要なブレーキ（過緊張）が外れます。結果として、下肢で生み出した床反力が、体幹を抜けることなくロスなく上方へ伝達されるようになり、筋力トレーニングを行わずとも即座に出力が向上します。'
+            }
+        };
+
+        function openTestInfoModal(testKey) {
+            const data = testInfoData[testKey];
+            document.getElementById('test-info-title').innerText = data.title;
+            document.getElementById('test-info-desc').innerText = data.desc;
+            document.getElementById('test-info-rationale').innerText = data.rationale;
+            document.getElementById('test-info-modal').classList.remove('hidden');
+        }
+        function closeTestInfoModal() { document.getElementById('test-info-modal').classList.add('hidden'); }
+
+        // --- データ管理関数 ---
         function getStorageData() { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
 
         function loadSubjectData() {
@@ -401,12 +484,19 @@
             const sport = document.getElementById('sub-sport').value.trim() || 'N/A';
             const date = document.getElementById('assessment-date').value;
 
+            // 6 Metrics
             const preA = parseFloat(document.getElementById('pre-a').value) || 0;
             const postA = parseFloat(document.getElementById('post-a').value) || 0;
-            const preB = parseFloat(document.getElementById('pre-b').value) || 0; // 保持時間 (秒)
+            const preB = parseFloat(document.getElementById('pre-b').value) || 0; 
             const postB = parseFloat(document.getElementById('post-b').value) || 0;
             const preC = parseFloat(document.getElementById('pre-c').value) || 0;
             const postC = parseFloat(document.getElementById('post-c').value) || 0;
+            const preD = parseFloat(document.getElementById('pre-d').value) || 0;
+            const postD = parseFloat(document.getElementById('post-d').value) || 0;
+            const preE = parseFloat(document.getElementById('pre-e').value) || 0;
+            const postE = parseFloat(document.getElementById('post-e').value) || 0;
+            const preF = parseFloat(document.getElementById('pre-f').value) || 0;
+            const postF = parseFloat(document.getElementById('post-f').value) || 0;
 
             const vp1 = parseFloat(document.getElementById('vas-pre-1').value);
             const vpo1 = parseFloat(document.getElementById('vas-post-1').value);
@@ -417,7 +507,11 @@
             const vp4 = parseFloat(document.getElementById('vas-pre-4').value);
             const vpo4 = parseFloat(document.getElementById('vas-post-4').value);
 
-            const sessionRecord = { date, preA, postA, preB, postB, preC, postC, vp1, vpo1, vp2, vpo2, vp3, vpo3, vp4, vpo4 };
+            const sessionRecord = { 
+                date, 
+                preA, postA, preB, postB, preC, postC, preD, postD, preE, postE, preF, postF,
+                vp1, vpo1, vp2, vpo2, vp3, vpo3, vp4, vpo4 
+            };
 
             const allData = getStorageData();
             if (!allData[id]) allData[id] = { info: {}, sessions: [] };
@@ -438,33 +532,34 @@
 
             switchTab('dashboard');
 
-            renderBarChart('chartA', 'SLR Mobility (°)', preA, postA, 'rgba(6, 182, 212, 0.8)');
-            // Test Bは保持時間（秒）になったので、数値が高いほど良い（reverseGood = false）
-            renderBarChart('chartB', 'Single Leg Stance (sec)', preB, postB, 'rgba(236, 72, 153, 0.8)', false); 
-            renderBarChart('chartC', 'CMJ Output (cm)', preC, postC, 'rgba(16, 185, 129, 0.8)');
+            // Bar Charts (6個)
+            renderBarChart('chartA', 'FFD (cm)', preA, postA, 'rgba(6, 182, 212, 0.8)');
+            renderBarChart('chartB', 'Shldr Flex (°)', preB, postB, 'rgba(6, 182, 212, 0.8)');
+            renderBarChart('chartC', 'Thoracic Rot (°)', preC, postC, 'rgba(6, 182, 212, 0.8)');
+            renderBarChart('chartD', 'Knee-Wall (cm)', preD, postD, 'rgba(6, 182, 212, 0.8)');
+            
+            renderBarChart('chartE', 'Stance (sec)', preE, postE, 'rgba(236, 72, 153, 0.8)'); 
+            renderBarChart('chartF', 'CMJ Output (cm)', preF, postF, 'rgba(16, 185, 129, 0.8)');
+            
             renderRadarChart([vp1, vp2, vp3, vp4], [vpo1, vpo2, vpo3, vpo4]);
             renderHistoryChart(currentSubjectHistory);
             
             alert('Data Saved Successfully.');
         }
 
-        // --- データのエクスポート（ダウンロード） ---
+        // --- データのエクスポート・インポート ---
         function exportData() {
             const data = localStorage.getItem(STORAGE_KEY);
-            if (!data || data === '{}') {
-                alert('エクスポートするデータがありません。');
-                return;
-            }
+            if (!data || data === '{}') { alert('エクスポートするデータがありません。'); return; }
             const blob = new Blob([data], {type: 'application/json'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `elite_performance_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `elite_performance_v4_backup_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
         }
 
-        // --- データのインポート（読み込み） ---
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -472,26 +567,24 @@
             reader.onload = function(e) {
                 try {
                     const json = JSON.parse(e.target.result);
-                    // 既存データとマージするか、完全上書きするか。今回は安全に上書きします
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(json));
                     alert('バックアップデータが正常に復元されました。画面を再読み込みします。');
                     location.reload();
-                } catch (err) {
-                    alert('ファイルの形式が正しくありません。');
-                }
+                } catch (err) { alert('ファイルの形式が正しくありません。'); }
             };
             reader.readAsText(file);
-            // 連続して同じファイルを選べるようにリセット
             event.target.value = '';
         }
 
-        function renderBarChart(canvasId, label, pre, post, color, reverseGood = false) {
+        function renderBarChart(canvasId, label, pre, post, color) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             let diff = post - pre;
             let percent = pre !== 0 ? ((diff / pre) * 100).toFixed(1) : 0;
             let titleText = `${label}`;
-            if(reverseGood) { if (diff < 0) titleText += ` [${Math.abs(percent)}% IMP]`; }
-            else { if (diff > 0) titleText += ` [+${percent}% UP]`; }
+            
+            // 今回の6項目はすべて数値が大きい方が良い設定とする
+            if (diff > 0) titleText += ` [+${Math.abs(percent)}% UP]`;
+            else if (diff < 0) titleText += ` [${percent}% DOWN]`;
 
             if (charts[canvasId]) charts[canvasId].destroy();
             charts[canvasId] = new Chart(ctx, {
@@ -500,7 +593,7 @@
                     labels: ['PRE', 'POST'],
                     datasets: [{ data: [pre, post], backgroundColor: ['rgba(255, 255, 255, 0.1)', color], borderRadius: 2 }]
                 },
-                options: { responsive: true, plugins: { title: { display: true, text: titleText, font: { size: 11, weight: '300' }, color: '#d1d5db' }, legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                options: { responsive: true, plugins: { title: { display: true, text: titleText, font: { size: 10, weight: '300' }, color: '#d1d5db' }, legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
         }
 
@@ -523,9 +616,11 @@
         function renderHistoryChart(historyData) {
             const ctx = document.getElementById('historyChart').getContext('2d');
             const labels = historyData.map(d => d.date.slice(5)); // Show MM-DD
-            const romData = historyData.map(d => d.postA);
-            const jumpData = historyData.map(d => d.postC);
-            const stanceData = historyData.map(d => d.postB);
+            
+            // 代表的な数値をプロット
+            const ffdData = historyData.map(d => d.postA);
+            const jumpData = historyData.map(d => d.postF);
+            const stanceData = historyData.map(d => d.postE);
 
             if (charts['historyChart']) charts['historyChart'].destroy();
             charts['historyChart'] = new Chart(ctx, {
@@ -533,8 +628,8 @@
                 data: {
                     labels: labels,
                     datasets: [
-                        { label: 'Mobility (°)', data: romData, borderColor: 'rgba(6, 182, 212, 1)', tension: 0.3, yAxisID: 'y' },
-                        { label: 'Output (cm)', data: jumpData, borderColor: 'rgba(16, 185, 129, 1)', tension: 0.3, yAxisID: 'y' },
+                        { label: 'FFD (cm)', data: ffdData, borderColor: 'rgba(6, 182, 212, 1)', tension: 0.3, yAxisID: 'y' },
+                        { label: 'CMJ (cm)', data: jumpData, borderColor: 'rgba(16, 185, 129, 1)', tension: 0.3, yAxisID: 'y' },
                         { label: 'Stance (sec)', data: stanceData, borderColor: 'rgba(236, 72, 153, 1)', tension: 0.3, borderDash: [4, 4], yAxisID: 'y1' }
                     ]
                 },
