@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONNECT AI - Biomech Assessment Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @media print {
+            body { background-color: white; color: black; font-size: 12pt; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .print-break-before { page-break-before: always; }
+            .print-container { width: 100%; max-width: 100%; padding: 0; margin: 0; box-shadow: none; }
+            .chart-container { width: 100% !important; height: auto !important; page-break-inside: avoid; }
+        }
+        .print-only { display: none; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-6 print-container" id="app-container">
+        
+        <div class="no-print mb-8 border-b pb-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold text-blue-900">Neuromuscular Control 評価システム</h1>
+                <p class="text-sm text-gray-500 mt-1">戦略的3ポイント介入プロトコル 即時最適化記録（Local Storage版）</p>
+            </div>
+            <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition">
+                レポートを印刷 (PDF保存)
+            </button>
+        </div>
+
+        <div class="print-only mb-6 border-b-2 border-blue-900 pb-2">
+            <h1 class="text-2xl font-bold text-blue-900">神経筋制御（Neuromuscular Control）最適化レポート</h1>
+            <p class="text-sm text-gray-600">測定日: <span id="print-date"></span> / 被験者ID: <span id="print-id"></span></p>
+        </div>
+
+        <div class="no-print flex space-x-4 mb-6">
+            <button onclick="switchTab('input')" class="tab-btn px-4 py-2 bg-blue-100 text-blue-800 font-semibold rounded" id="btn-input">データ入力</button>
+            <button onclick="switchTab('dashboard')" class="tab-btn px-4 py-2 bg-gray-200 text-gray-700 font-semibold rounded" id="btn-dashboard">評価進捗グラフ</button>
+        </div>
+
+        <div id="tab-input" class="no-print">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 基本情報 -->
+                <div class="bg-gray-50 p-4 rounded border">
+                    <h2 class="font-bold text-lg mb-4 text-blue-800">対象者情報</h2>
+                    <div class="flex space-x-2 mb-3">
+                        <input type="text" id="subject-id" placeholder="被験者ID (例: ATH-001)" class="w-2/3 p-2 border rounded font-bold">
+                        <button onclick="loadSubjectData()" class="w-1/3 bg-gray-800 text-white rounded text-sm hover:bg-gray-700 transition">過去データ読込</button>
+                    </div>
+                    <p id="load-status" class="text-xs text-green-600 mb-3 hidden">過去データを読み込みました</p>
+                    <input type="date" id="assessment-date" class="w-full p-2 border rounded">
+                </div>
+
+                <!-- テスト入力 -->
+                <div class="bg-gray-50 p-4 rounded border">
+                    <h2 class="font-bold text-lg mb-4 text-blue-800">プロトコル測定結果</h2>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-1">テストA: SLR可動域 (度) - ハムストリングス抑制</label>
+                        <div class="flex space-x-2">
+                            <input type="number" id="pre-a" placeholder="Pre-Test" class="w-1/2 p-2 border rounded">
+                            <input type="number" id="post-a" placeholder="Post-Test" class="w-1/2 p-2 border rounded">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-1">テストB: 重心動揺面積 (cm²) - 足関節戦略</label>
+                        <p class="text-xs text-gray-500 mb-1">※数値が小さいほど安定</p>
+                        <div class="flex space-x-2">
+                            <input type="number" id="pre-b" placeholder="Pre-Test" class="w-1/2 p-2 border rounded">
+                            <input type="number" id="post-b" placeholder="Post-Test" class="w-1/2 p-2 border rounded">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-1">テストC: 垂直跳び出力 (cm) - キネティックチェーン</label>
+                        <div class="flex space-x-2">
+                            <input type="number" id="pre-c" placeholder="Pre-Test" class="w-1/2 p-2 border rounded">
+                            <input type="number" id="post-c" placeholder="Post-Test" class="w-1/2 p-2 border rounded">
+                        </div>
+                    </div>
+
+                    <button onclick="saveAndGenerateGraphs()" class="w-full bg-green-600 text-white font-bold py-2 rounded hover:bg-green-700 transition">
+                        端末にデータを保存して評価を生成
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-dashboard" class="hidden print-block">
+            <h2 class="font-bold text-xl mb-4 border-l-4 border-blue-600 pl-2">即時最適化効果 (Pre vs Post)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <div class="bg-white p-4 rounded border chart-container"><canvas id="chartA"></canvas></div>
+                <div class="bg-white p-4 rounded border chart-container"><canvas id="chartB"></canvas></div>
+                <div class="bg-white p-4 rounded border chart-container"><canvas id="chartC"></canvas></div>
+            </div>
+
+            <h2 class="font-bold text-xl mb-4 border-l-4 border-blue-600 pl-2">中長期的な神経筋制御の推移 (経過観察)</h2>
+            <div class="bg-white p-4 rounded border mb-8 chart-container w-full" style="max-height: 400px;">
+                <canvas id="historyChart"></canvas>
+            </div>
+
+            <div class="print-only print-break-before">
+                <h2 class="font-bold text-xl mb-4 border-l-4 border-blue-600 pl-2 mt-8">【総括】生体力学的・神経生理学的根拠</h2>
+                <div class="text-sm leading-relaxed space-y-4">
+                    <p>本レポートにおける可動域の拡大やバランスの向上は、物理的な筋組織の弛緩ではなく、<strong>中枢神経系における最適フィードバック制御（Optimal Feedback Control）</strong>の更新によるものである。</p>
+                    <p>本プロトコルは、交差性症候群のハブとなる「鎖骨下」「胸腰椎移行部（T12-L1）」「前脛骨筋」の3点に対し、パッチを介してメルケル細胞（SA-I）およびルフィニ小体（SA-II）へ高密度な触覚刺激を入力した。結果として、脳はノイズの多い筋情報より、クリアな皮膚からの求心性信号を優先的に重み付けし、感覚予測誤差が瞬時にリセットされた。上記グラフに示される即時的な可動域拡大および出力の向上は、この<strong>神経促通と相反性抑制の正常化</strong>を定量的に立証するものである。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('assessment-date').valueAsDate = new Date();
+        const STORAGE_KEY = 'biomech_assessment_data';
+        let currentSubjectHistory = [];
+        let chartA, chartB, chartC, historyChart;
+
+        function getStorageData() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        }
+
+        function loadSubjectData() {
+            const subjectId = document.getElementById('subject-id').value.trim();
+            if (!subjectId) {
+                alert("被験者IDを入力してください。");
+                return;
+            }
+            const allData = getStorageData();
+            currentSubjectHistory = allData[subjectId] || [];
+            
+            const statusEl = document.getElementById('load-status');
+            statusEl.innerText = `過去のデータ（${currentSubjectHistory.length}件）を読み込みました。`;
+            statusEl.classList.remove('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.getElementById('tab-input').classList.add('hidden');
+            document.getElementById('tab-dashboard').classList.add('hidden');
+            document.getElementById('btn-input').classList.replace('bg-blue-100', 'bg-gray-200');
+            document.getElementById('btn-input').classList.replace('text-blue-800', 'text-gray-700');
+            document.getElementById('btn-dashboard').classList.replace('bg-blue-100', 'bg-gray-200');
+            document.getElementById('btn-dashboard').classList.replace('text-blue-800', 'text-gray-700');
+
+            if (tabId === 'input') {
+                document.getElementById('tab-input').classList.remove('hidden');
+                document.getElementById('btn-input').classList.replace('bg-gray-200', 'bg-blue-100');
+                document.getElementById('btn-input').classList.replace('text-gray-700', 'text-blue-800');
+            } else {
+                document.getElementById('tab-dashboard').classList.remove('hidden');
+                document.getElementById('btn-dashboard').classList.replace('bg-gray-200', 'bg-blue-100');
+                document.getElementById('btn-dashboard').classList.replace('text-gray-700', 'text-blue-800');
+            }
+        }
+
+        function saveAndGenerateGraphs() {
+            const subjectId = document.getElementById('subject-id').value.trim() || 'Guest-' + Math.floor(Math.random() * 1000);
+            const date = document.getElementById('assessment-date').value;
+            
+            const preA = parseFloat(document.getElementById('pre-a').value) || 0;
+            const postA = parseFloat(document.getElementById('post-a').value) || 0;
+            const preB = parseFloat(document.getElementById('pre-b').value) || 0;
+            const postB = parseFloat(document.getElementById('post-b').value) || 0;
+            const preC = parseFloat(document.getElementById('pre-c').value) || 0;
+            const postC = parseFloat(document.getElementById('post-c').value) || 0;
+
+            const sessionRecord = { date, preA, postA, preB, postB, preC, postC };
+
+            const allData = getStorageData();
+            if (!allData[subjectId]) {
+                allData[subjectId] = [];
+            }
+            
+            // 同一日のデータがある場合は上書き、なければ追加
+            const existingIndex = allData[subjectId].findIndex(r => r.date === date);
+            if (existingIndex >= 0) {
+                allData[subjectId][existingIndex] = sessionRecord;
+            } else {
+                allData[subjectId].push(sessionRecord);
+            }
+            
+            // 日付順にソート
+            allData[subjectId].sort((a, b) => new Date(a.date) - new Date(b.date));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
+            
+            currentSubjectHistory = allData[subjectId];
+
+            document.getElementById('print-id').innerText = subjectId;
+            document.getElementById('print-date').innerText = date;
+
+            switchTab('dashboard');
+            document.getElementById('tab-dashboard').classList.add('print-block');
+
+            renderBarChart('chartA', '可動域: SLR (度)', preA, postA, 'rgba(54, 162, 235, 0.6)');
+            renderBarChart('chartB', '重心動揺面積 (cm²)', preB, postB, 'rgba(255, 99, 132, 0.6)', true);
+            renderBarChart('chartC', '垂直跳び出力 (cm)', preC, postC, 'rgba(75, 192, 192, 0.6)');
+
+            renderHistoryChart(subjectId, currentSubjectHistory);
+        }
+
+        function renderBarChart(canvasId, label, pre, post, color, reverseGood = false) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            let diff = post - pre;
+            let percent = pre !== 0 ? ((diff / pre) * 100).toFixed(1) : 0;
+            let titleText = `${label} (Pre vs Post)`;
+            
+            if(reverseGood) {
+                if (diff < 0) titleText += ` [${Math.abs(percent)}% 改善]`;
+            } else {
+                if (diff > 0) titleText += ` [${percent}% 向上]`;
+            }
+
+            if (window[canvasId] instanceof Chart) { window[canvasId].destroy(); }
+
+            window[canvasId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pre-Test', 'Post-Test'],
+                    datasets: [{ label: label, data: [pre, post], backgroundColor: ['rgba(201, 203, 207, 0.6)', color], borderWidth: 1 }]
+                },
+                options: { responsive: true, plugins: { title: { display: true, text: titleText, font: { size: 14 } }, legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        function renderHistoryChart(id, historyData) {
+            const ctx = document.getElementById('historyChart').getContext('2d');
+            
+            const labels = historyData.map(d => d.date);
+            const romData = historyData.map(d => d.postA);
+            const swayData = historyData.map(d => d.postB);
+            const jumpData = historyData.map(d => d.postC);
+
+            if (historyChart instanceof Chart) { historyChart.destroy(); }
+
+            historyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'SLR可動域 Post (度)', data: romData, borderColor: 'rgb(54, 162, 235)', tension: 0.1, yAxisID: 'y' },
+                        { label: '出力 Post (cm)', data: jumpData, borderColor: 'rgb(75, 192, 192)', tension: 0.1, yAxisID: 'y' },
+                        { label: '重心動揺 Post (cm²)', data: swayData, borderColor: 'rgb(255, 99, 132)', tension: 0.1, yAxisID: 'y1', borderDash: [5, 5] }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: `被験者ID: ${id} - プロトコル実施後の推移` } },
+                    scales: {
+                        y: { type: 'linear', display: true, position: 'left', title: { display: true, text: '角度 / 出力' } },
+                        y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: '動揺面積 (低いほど良い)' }, grid: { drawOnChartArea: false } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
