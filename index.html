@@ -179,29 +179,45 @@
                                     Test A: 立位体前屈 FFD (cm)
                                     <button onclick="openTestInfoModal('A')" class="ml-2 text-cyan-600 hover:text-cyan-400 transition" title="詳細解説"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
                                 </label>
-                                <div class="flex space-x-2">
+                                <div class="flex space-x-2 pt-3">
                                     <input type="number" id="pre-a" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
                                     <input type="number" id="post-a" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
                                 </div>
                             </div>
                             <div>
                                 <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
-                                    Test B: 肩関節屈曲 (度)
+                                    Test B: 肩関節屈曲 (度) [左右]
                                     <button onclick="openTestInfoModal('B')" class="ml-2 text-cyan-600 hover:text-cyan-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
                                 </label>
-                                <div class="flex space-x-2">
-                                    <input type="number" id="pre-b" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
-                                    <input type="number" id="post-b" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                <div class="space-y-1">
+                                    <div class="flex space-x-2">
+                                        <span class="text-[10px] text-gray-500 w-4 inline-block align-middle pt-2">右</span>
+                                        <input type="number" id="pre-b-r" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                        <input type="number" id="post-b-r" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <span class="text-[10px] text-gray-500 w-4 inline-block align-middle pt-2">左</span>
+                                        <input type="number" id="pre-b-l" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                        <input type="number" id="post-b-l" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                    </div>
                                 </div>
                             </div>
                             <div>
                                 <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
-                                    Test C: 座位胸郭回旋 (度)
+                                    Test C: 座位胸郭回旋 (度) [右回旋 / 左回旋]
                                     <button onclick="openTestInfoModal('C')" class="ml-2 text-cyan-600 hover:text-cyan-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
                                 </label>
-                                <div class="flex space-x-2">
-                                    <input type="number" id="pre-c" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
-                                    <input type="number" id="post-c" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                <div class="space-y-1">
+                                    <div class="flex space-x-2">
+                                        <span class="text-[10px] text-gray-500 w-12 inline-block align-middle pt-2">右回旋</span>
+                                        <input type="number" id="pre-c-r" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                        <input type="number" id="post-c-r" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <span class="text-[10px] text-gray-500 w-12 inline-block align-middle pt-2">左回旋</span>
+                                        <input type="number" id="pre-c-l" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
+                                        <input type="number" id="post-c-l" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                    </div>
                                 </div>
                             </div>
                             <div>
@@ -209,9 +225,9 @@
                                     Test D: 荷重位足関節背屈 (cm)
                                     <button onclick="openTestInfoModal('D')" class="ml-2 text-cyan-600 hover:text-cyan-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
                                 </label>
-                                <div class="flex space-x-2">
+                                <div class="flex space-x-2 pt-3">
                                     <input type="number" id="pre-d" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
-                                    <input type="number" id="post-d" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
+                                    <input type="number" id="post-d" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan100">
                                 </div>
                             </div>
                         </div>
@@ -222,22 +238,38 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
-                                    Test E: 閉眼片脚立位 (秒)
+                                    Test E: 閉眼片脚立位 (秒) [左右軸足別]
                                     <button onclick="openTestInfoModal('E')" class="ml-2 text-pink-600 hover:text-pink-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
                                 </label>
-                                <div class="flex space-x-2">
-                                    <input type="number" id="pre-e" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right">
-                                    <input type="number" id="post-e" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right text-pink-100">
+                                <div class="space-y-1">
+                                    <div class="flex space-x-2">
+                                        <span class="text-[10px] text-gray-500 w-12 inline-block align-middle pt-2">右 (軸足)</span>
+                                        <input type="number" id="pre-e-r" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right">
+                                        <input type="number" id="post-e-r" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right text-pink-100">
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <span class="text-[10px] text-gray-500 w-12 inline-block align-middle pt-2">左 (軸足)</span>
+                                        <input type="number" id="pre-e-l" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right">
+                                        <input type="number" id="post-e-l" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right text-pink-100">
+                                    </div>
                                 </div>
                             </div>
                             <div>
                                 <label class="flex items-center text-xs tracking-wide text-gray-300 mb-2">
-                                    Test F: CMJ 垂直跳び (cm)
+                                    Test F: CMJ 垂直跳び (cm) [左右別]
                                     <button onclick="openTestInfoModal('F')" class="ml-2 text-pink-600 hover:text-pink-400 transition"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
                                 </label>
-                                <div class="flex space-x-2">
-                                    <input type="number" id="pre-f" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right">
-                                    <input type="number" id="post-f" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right text-pink-100">
+                                <div class="space-y-1">
+                                    <div class="flex space-x-2">
+                                        <span class="text-[10px] text-gray-500 w-4 inline-block align-middle pt-2">右</span>
+                                        <input type="number" id="pre-f-r" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right">
+                                        <input type="number" id="post-f-r" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right text-pink-100">
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <span class="text-[10px] text-gray-500 w-4 inline-block align-middle pt-2">左</span>
+                                        <input type="number" id="pre-f-l" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right">
+                                        <input type="number" id="post-f-l" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-pink-500 font-mono text-right text-pink-100">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -354,7 +386,7 @@
         Chart.defaults.scale.grid.borderColor = 'rgba(255, 255, 255, 0.1)';
 
         document.getElementById('assessment-date').valueAsDate = new Date();
-        const STORAGE_KEY = 'biomech_assessment_elite_v4_data'; 
+        const STORAGE_KEY = 'biomech_assessment_elite_v5_data'; 
         let currentSubjectHistory = [];
         let charts = {};
 
@@ -374,12 +406,12 @@
             },
             'B': {
                 title: 'Test B: 肩関節屈曲 (度)',
-                desc: '仰臥位または立位で腕を前方から頭上へ限界まで挙上（バンザイ）した角度を測定します。肩甲帯および胸椎の伸展モビリティを評価します。',
+                desc: '仰臥位または立位で腕を前方から頭上へ限界まで挙上（バンザイ）した角度を左右別に測定します。肩甲帯および胸椎の伸展モビリティの左右差を評価します。',
                 rationale: '【鎖骨下ハブへの介入効果】\n上位交差性症候群で短縮・過緊張を起こしやすい小胸筋・大胸筋上の皮膚受容器を持続刺激することで、相反性神経抑制が正常化します。肩甲骨が正しい後傾・上方回旋ポジションに収まり、インピンジメント（詰まり）なく挙上角度が拡大します。'
             },
             'C': {
                 title: 'Test C: 座位胸郭回旋 (度)',
-                desc: '椅子に座り（骨盤を固定した状態）、バーを肩に担いで左右に限界まで身体を捻った角度を測定します。胸椎の純粋な回旋モビリティを評価します。',
+                desc: '椅子に座り骨盤を完全に固定した状態で、肩に担いだバーとともに「右回旋」「左回旋」それぞれの限界可動角度を測定し、回旋の非対称性を評価します。',
                 rationale: '【胸腰椎・鎖骨下ハブの統合効果】\n Joint-by-Jointセオリーにおいて、本来高い可動性を持つべき「胸椎」のロックが外れるかを検証します。大胸筋の過緊張緩和と、胸腰椎移行部のテンション解放が組み合わさることで、ゴルフや野球など回旋系スポーツの出力に直結する滑らかなローテーションが回復します。'
             },
             'D': {
@@ -389,13 +421,13 @@
             },
             'E': {
                 title: 'Test E: 閉眼片脚立位 (秒)',
-                desc: '視覚情報を遮断（目を閉じる）し、片脚でバランスを保ち続けられる時間（秒）を測定します。固有受容感覚と姿勢制御の自律性を評価します。',
+                desc: '視覚情報を完全に遮断し、右足・左足をそれぞれ軸足とした状態で姿勢を保持できる時間（秒）を測定し、左右の固有受容感覚と自律的姿勢制御のバランスを評価します。',
                 rationale: '【中枢神経系のエラー修正】\n視覚に頼れない状況下では、足裏や関節からの体性感覚フィードバックへの依存度が高まります。3つのハブから脳へクリアな安全信号（ノイズのない求心性情報）が送られることで小脳での身体状態推定が安定し、重心動揺が劇的に減少（タイムが延長）します。'
             },
             'F': {
                 title: 'Test F: CMJ 垂直跳び出力 (cm)',
-                desc: '反動を用いた垂直跳び（Counter Movement Jump）の高さを測定します。全身のキネティックチェーン（運動連鎖）の出力効率を評価します。',
-                rationale: '【相反性神経抑制と連動性の正常化】\n関節ごとのモビリティとスタビリティの破綻が修正されることで、各関節の不必要なブレーキ（過緊張）が外れます。結果として、下肢で生み出した床反力が、体幹を抜けることなくロスなく上方へ伝達されるようになり、筋力トレーニングを行わずとも即座に出力が向上します。'
+                desc: '反動を用いた垂直跳び（Counter Movement Jump）を左右片脚、または左右の主導バランスを意識して測定し、全身のキネティックチェーン（運動連鎖）における出力の非対称性を評価します。',
+                rationale: '【相反性神経抑制と連動性の正常化】\n関節ごとのモビリティとスタビリティの破綻が修正されることで、各関節の不必要なブレーキ（過緊張）が外ります。結果として、下肢で生み出した床反力が、体幹を抜けることなくロスなく上方へ伝達されるようになり、筋力トレーニングを行わずとも即座に出力が向上します。'
             }
         };
 
@@ -484,19 +516,32 @@
             const sport = document.getElementById('sub-sport').value.trim() || 'N/A';
             const date = document.getElementById('assessment-date').value;
 
-            // 6 Metrics
+            // 6 Metrics (左右拡張対応データ取得)
             const preA = parseFloat(document.getElementById('pre-a').value) || 0;
             const postA = parseFloat(document.getElementById('post-a').value) || 0;
-            const preB = parseFloat(document.getElementById('pre-b').value) || 0; 
-            const postB = parseFloat(document.getElementById('post-b').value) || 0;
-            const preC = parseFloat(document.getElementById('pre-c').value) || 0;
-            const postC = parseFloat(document.getElementById('post-c').value) || 0;
+            
+            const preB_R = parseFloat(document.getElementById('pre-b-r').value) || 0;
+            const postB_R = parseFloat(document.getElementById('post-b-r').value) || 0;
+            const preB_L = parseFloat(document.getElementById('pre-b-l').value) || 0;
+            const postB_L = parseFloat(document.getElementById('post-b-l').value) || 0;
+
+            const preC_R = parseFloat(document.getElementById('pre-c-r').value) || 0;
+            const postC_R = parseFloat(document.getElementById('post-c-r').value) || 0;
+            const preC_L = parseFloat(document.getElementById('pre-c-l').value) || 0;
+            const postC_L = parseFloat(document.getElementById('post-c-l').value) || 0;
+
             const preD = parseFloat(document.getElementById('pre-d').value) || 0;
             const postD = parseFloat(document.getElementById('post-d').value) || 0;
-            const preE = parseFloat(document.getElementById('pre-e').value) || 0;
-            const postE = parseFloat(document.getElementById('post-e').value) || 0;
-            const preF = parseFloat(document.getElementById('pre-f').value) || 0;
-            const postF = parseFloat(document.getElementById('post-f').value) || 0;
+            
+            const preE_R = parseFloat(document.getElementById('pre-e-r').value) || 0;
+            const postE_R = parseFloat(document.getElementById('post-e-r').value) || 0;
+            const preE_L = parseFloat(document.getElementById('pre-e-l').value) || 0;
+            const postE_L = parseFloat(document.getElementById('post-e-l').value) || 0;
+
+            const preF_R = parseFloat(document.getElementById('pre-f-r').value) || 0;
+            const postF_R = parseFloat(document.getElementById('post-f-r').value) || 0;
+            const preF_L = parseFloat(document.getElementById('pre-f-l').value) || 0;
+            const postF_L = parseFloat(document.getElementById('post-f-l').value) || 0;
 
             const vp1 = parseFloat(document.getElementById('vas-pre-1').value);
             const vpo1 = parseFloat(document.getElementById('vas-post-1').value);
@@ -509,7 +554,12 @@
 
             const sessionRecord = { 
                 date, 
-                preA, postA, preB, postB, preC, postC, preD, postD, preE, postE, preF, postF,
+                preA, postA, 
+                preB_R, postB_R, preB_L, postB_L,
+                preC_R, postC_R, preC_L, postC_L,
+                preD, postD, 
+                preE_R, postE_R, preE_L, postE_L,
+                preF_R, postF_R, preF_L, postF_L,
                 vp1, vpo1, vp2, vpo2, vp3, vpo3, vp4, vpo4 
             };
 
@@ -532,14 +582,14 @@
 
             switchTab('dashboard');
 
-            // Bar Charts (6個)
+            // Bar Charts (単一項目と左右拡張項目を正確に描き分け)
             renderBarChart('chartA', 'FFD (cm)', preA, postA, 'rgba(6, 182, 212, 0.8)');
-            renderBarChart('chartB', 'Shldr Flex (°)', preB, postB, 'rgba(6, 182, 212, 0.8)');
-            renderBarChart('chartC', 'Thoracic Rot (°)', preC, postC, 'rgba(6, 182, 212, 0.8)');
+            renderBarChartLR('chartB', 'Shldr Flex (°)', preB_R, postB_R, preB_L, postB_L, 'rgba(6, 182, 212, 0.8)');
+            renderBarChartLR('chartC', 'Thoracic Rot (°)', preC_R, postC_R, preC_L, postC_L, 'rgba(6, 182, 212, 0.8)');
             renderBarChart('chartD', 'Knee-Wall (cm)', preD, postD, 'rgba(6, 182, 212, 0.8)');
             
-            renderBarChart('chartE', 'Stance (sec)', preE, postE, 'rgba(236, 72, 153, 0.8)'); 
-            renderBarChart('chartF', 'CMJ Output (cm)', preF, postF, 'rgba(16, 185, 129, 0.8)');
+            renderBarChartLR('chartE', 'Stance (sec)', preE_R, postE_R, preE_L, postE_L, 'rgba(236, 72, 153, 0.8)'); 
+            renderBarChartLR('chartF', 'CMJ Output (cm)', preF_R, postF_R, preF_L, postF_L, 'rgba(16, 185, 129, 0.8)');
             
             renderRadarChart([vp1, vp2, vp3, vp4], [vpo1, vpo2, vpo3, vpo4]);
             renderHistoryChart(currentSubjectHistory);
@@ -555,7 +605,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `elite_performance_v4_backup_${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `elite_performance_v5_backup_${new Date().toISOString().split('T')[0]}.json`;
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -576,13 +626,13 @@
             event.target.value = '';
         }
 
+        // 単一項目用バーチャート
         function renderBarChart(canvasId, label, pre, post, color) {
             const ctx = document.getElementById(canvasId).getContext('2d');
             let diff = post - pre;
             let percent = pre !== 0 ? ((diff / pre) * 100).toFixed(1) : 0;
             let titleText = `${label}`;
             
-            // 今回の6項目はすべて数値が大きい方が良い設定とする
             if (diff > 0) titleText += ` [+${Math.abs(percent)}% UP]`;
             else if (diff < 0) titleText += ` [${percent}% DOWN]`;
 
@@ -594,6 +644,37 @@
                     datasets: [{ data: [pre, post], backgroundColor: ['rgba(255, 255, 255, 0.1)', color], borderRadius: 2 }]
                 },
                 options: { responsive: true, plugins: { title: { display: true, text: titleText, font: { size: 10, weight: '300' }, color: '#d1d5db' }, legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        // 左右拡張用の2連比較バーチャート
+        function renderBarChartLR(canvasId, label, preR, postR, preL, postL, color) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            let diffR = postR - preR;
+            let percentR = preR !== 0 ? ((diffR / preR) * 100).toFixed(1) : 0;
+            let diffL = postL - preL;
+            let percentL = preL !== 0 ? ((diffL / preL) * 100).toFixed(1) : 0;
+            
+            let titleText = `${label} (右:${diffR >= 0 ? '+' : ''}${percentR}% | 左:${diffL >= 0 ? '+' : ''}${percentL}%)`;
+
+            if (charts[canvasId]) charts[canvasId].destroy();
+            charts[canvasId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['右 (R)', '左 (L)'],
+                    datasets: [
+                        { label: 'PRE', data: [preR, preL], backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 2 },
+                        { label: 'POST', data: [postR, postL], backgroundColor: color, borderRadius: 2 }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    plugins: { 
+                        title: { display: true, text: titleText, font: { size: 10, weight: '300' }, color: '#d1d5db' }, 
+                        legend: { display: true, labels: { boxWidth: 8, font: { size: 8 } } } 
+                    }, 
+                    scales: { y: { beginAtZero: true } } 
+                }
             });
         }
 
@@ -613,14 +694,16 @@
             });
         }
 
+        // 左右のバランス推移が見える歴史トラッキンググラフ
         function renderHistoryChart(historyData) {
             const ctx = document.getElementById('historyChart').getContext('2d');
-            const labels = historyData.map(d => d.date.slice(5)); // Show MM-DD
+            const labels = historyData.map(d => d.date.slice(5)); 
             
-            // 代表的な数値をプロット
             const ffdData = historyData.map(d => d.postA);
-            const jumpData = historyData.map(d => d.postF);
-            const stanceData = historyData.map(d => d.postE);
+            const jumpDataR = historyData.map(d => d.postF_R || d.postF || 0);
+            const jumpDataL = historyData.map(d => d.postF_L || 0);
+            const stanceDataR = historyData.map(d => d.postE_R || d.postE || 0);
+            const stanceDataL = historyData.map(d => d.postE_L || 0);
 
             if (charts['historyChart']) charts['historyChart'].destroy();
             charts['historyChart'] = new Chart(ctx, {
@@ -629,8 +712,10 @@
                     labels: labels,
                     datasets: [
                         { label: 'FFD (cm)', data: ffdData, borderColor: 'rgba(6, 182, 212, 1)', tension: 0.3, yAxisID: 'y' },
-                        { label: 'CMJ (cm)', data: jumpData, borderColor: 'rgba(16, 185, 129, 1)', tension: 0.3, yAxisID: 'y' },
-                        { label: 'Stance (sec)', data: stanceData, borderColor: 'rgba(236, 72, 153, 1)', tension: 0.3, borderDash: [4, 4], yAxisID: 'y1' }
+                        { label: 'CMJ 右 (cm)', data: jumpDataR, borderColor: 'rgba(16, 185, 129, 1)', tension: 0.3, yAxisID: 'y' },
+                        { label: 'CMJ 左 (cm)', data: jumpDataL, borderColor: 'rgba(16, 185, 129, 0.5)', borderDash: [2, 2], tension: 0.3, yAxisID: 'y' },
+                        { label: 'Stance 右 (sec)', data: stanceDataR, borderColor: 'rgba(236, 72, 153, 1)', tension: 0.3, borderDash: [4, 4], yAxisID: 'y1' },
+                        { label: 'Stance 左 (sec)', data: stanceDataL, borderColor: 'rgba(236, 72, 153, 0.5)', tension: 0.3, borderDash: [2, 4], yAxisID: 'y1' }
                     ]
                 },
                 options: {
