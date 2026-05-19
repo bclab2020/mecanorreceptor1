@@ -39,6 +39,10 @@
     <div class="max-w-6xl mx-auto bg-[#0f0f11] border border-gray-800 shadow-2xl rounded-xl p-6 md:p-10 print-container relative">
         
         <div class="absolute top-6 right-6 flex space-x-2 no-print z-10">
+            <button onclick="clearForm()" class="bg-transparent border border-pink-800 text-pink-500 px-3 py-1.5 rounded text-[10px] tracking-wider hover:bg-pink-900 hover:text-white transition uppercase flex items-center" title="フォームをクリアして新規作成">
+                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                New
+            </button>
             <label class="cursor-pointer bg-transparent border border-gray-600 text-gray-400 px-3 py-1.5 rounded text-[10px] tracking-wider hover:bg-gray-800 hover:text-white transition uppercase flex items-center">
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                 Import
@@ -78,8 +82,19 @@
         </div>
 
         <div id="tab-input" class="no-print">
+            
+            <div id="restore-banner" class="hidden bg-cyan-900/30 border border-cyan-800 text-cyan-100 p-4 rounded-lg mb-8 flex justify-between items-center shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                <div class="text-sm flex items-center">
+                    <svg class="w-5 h-5 mr-3 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span><span class="font-bold tracking-widest uppercase text-cyan-400 mr-2">Notice:</span>保存されていない入力途中のデータがあります。</span>
+                </div>
+                <div class="space-x-3 flex-shrink-0">
+                    <button onclick="restoreTempData()" class="px-4 py-1.5 bg-cyan-700 hover:bg-cyan-600 rounded text-xs uppercase tracking-wider transition">Restore (復元)</button>
+                    <button onclick="discardTempData()" class="px-4 py-1.5 bg-gray-800 hover:bg-gray-700 rounded text-xs uppercase tracking-wider transition text-gray-300 border border-gray-600">Discard (破棄)</button>
+                </div>
+            </div>
+
             <div class="space-y-8">
-                
                 <div class="bg-[#161618] p-6 rounded-lg border border-gray-800 mb-8">
                     <div class="flex justify-between items-center mb-5 border-b border-gray-700 pb-3">
                         <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Hub Placement Guide</h2>
@@ -227,7 +242,7 @@
                                 </label>
                                 <div class="flex space-x-2 pt-3">
                                     <input type="number" id="pre-d" placeholder="Pre" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right">
-                                    <input type="number" id="post-d" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan100">
+                                    <input type="number" id="post-d" placeholder="Post" class="w-1/2 p-2 bg-[#0a0a0a] border border-gray-700 rounded text-sm focus:outline-none focus:border-cyan-500 font-mono text-right text-cyan-100">
                                 </div>
                             </div>
                         </div>
@@ -302,18 +317,11 @@
 
                 <div class="flex flex-wrap md:flex-nowrap gap-8 mb-8 relative z-0">
                     <div class="chart-box w-full md:w-1/3 relative z-0">
-                        <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text relative z-10">
-                            <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Sensory Integration</h2>
-                        </div>
-                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800 flex justify-center relative z-0">
-                            <div class="w-full max-w-[320px] relative z-0"><canvas id="radarVAS"></canvas></div>
-                        </div>
+                        <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text relative z-10"><h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Sensory Integration</h2></div>
+                        <div class="bg-[#161618] p-4 rounded-lg border border-gray-800 flex justify-center relative z-0"><div class="w-full max-w-[320px] relative z-0"><canvas id="radarVAS"></canvas></div></div>
                     </div>
-
                     <div class="chart-box w-full md:w-2/3 relative z-0">
-                        <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text relative z-10">
-                            <h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Long-term Progress</h2>
-                        </div>
+                        <div class="mb-4 border-b border-gray-800 pb-2 print-invert-text relative z-10"><h2 class="font-light tracking-widest text-lg text-gray-200 uppercase">Long-term Progress</h2></div>
                         <div class="bg-[#161618] p-4 rounded-lg border border-gray-800 relative z-0" style="height: 320px;"><canvas id="historyChart"></canvas></div>
                     </div>
                 </div>
@@ -366,14 +374,8 @@
             <button onclick="closeTestInfoModal()" class="text-gray-500 hover:text-white transition text-3xl font-light absolute top-2 right-4">&times;</button>
             <h3 id="test-info-title" class="font-medium tracking-wide text-lg text-cyan-400 mb-2 border-b border-gray-800 pb-2"></h3>
             <div class="text-sm text-gray-300 leading-relaxed space-y-4 mt-2">
-                <div>
-                    <h4 class="text-[10px] text-cyan-700 uppercase tracking-widest mb-1">【測定方法・目的】</h4>
-                    <p id="test-info-desc"></p>
-                </div>
-                <div class="bg-[#161618] p-3 rounded border border-gray-800">
-                    <h4 class="text-[10px] text-pink-700 uppercase tracking-widest mb-1">【生体力学的根拠・ハブの作用】</h4>
-                    <p id="test-info-rationale" class="text-xs text-gray-400"></p>
-                </div>
+                <div><h4 class="text-[10px] text-cyan-700 uppercase tracking-widest mb-1">【測定方法・目的】</h4><p id="test-info-desc"></p></div>
+                <div class="bg-[#161618] p-3 rounded border border-gray-800"><h4 class="text-[10px] text-pink-700 uppercase tracking-widest mb-1">【生体力学的根拠・ハブの作用】</h4><p id="test-info-rationale" class="text-xs text-gray-400"></p></div>
             </div>
         </div>
     </div>
@@ -385,69 +387,119 @@
         Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
         Chart.defaults.scale.grid.borderColor = 'rgba(255, 255, 255, 0.1)';
 
-        document.getElementById('assessment-date').valueAsDate = new Date();
         const STORAGE_KEY = 'biomech_assessment_elite_v5_data'; 
+        const TEMP_STORAGE_KEY = 'biomech_assessment_elite_v5_temp';
         let currentSubjectHistory = [];
         let charts = {};
 
-        // スライダー同期
-        ['vas-pre-1','vas-post-1','vas-pre-2','vas-post-2','vas-pre-3','vas-post-3','vas-pre-4','vas-post-4'].forEach(id => {
-            const el = document.getElementById(id);
-            const targetId = id.replace('vas-','v-').replace('pre-','p').replace('post-','po');
-            el.addEventListener('input', () => { document.getElementById(targetId).innerText = el.value; });
+        // 監視する入力項目のIDリスト（オートセーブ・クリア用）
+        const inputIds = [
+            'sub-id', 'sub-name', 'sub-birth', 'sub-sport', 'assessment-date',
+            'vas-pre-1', 'vas-post-1', 'vas-pre-2', 'vas-post-2', 'vas-pre-3', 'vas-post-3', 'vas-pre-4', 'vas-post-4',
+            'pre-a', 'post-a', 'pre-b-r', 'post-b-r', 'pre-b-l', 'post-b-l', 'pre-c-r', 'post-c-r', 'pre-c-l', 'post-c-l',
+            'pre-d', 'post-d', 'pre-e-r', 'post-e-r', 'pre-e-l', 'post-e-l', 'pre-f-r', 'post-f-r', 'pre-f-l', 'post-f-l'
+        ];
+
+        // --- オートセーブ＆復元機能 ---
+        function saveTempData() {
+            const data = {};
+            inputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) data[id] = el.value;
+            });
+            localStorage.setItem(TEMP_STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function restoreTempData() {
+            const raw = localStorage.getItem(TEMP_STORAGE_KEY);
+            if(raw) {
+                const data = JSON.parse(raw);
+                inputIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if(el && data[id] !== undefined) {
+                        el.value = data[id];
+                        if(id.startsWith('vas-')) el.dispatchEvent(new Event('input'));
+                    }
+                });
+            }
+            document.getElementById('restore-banner').classList.add('hidden');
+        }
+
+        function discardTempData() {
+            localStorage.removeItem(TEMP_STORAGE_KEY);
+            document.getElementById('restore-banner').classList.add('hidden');
+            clearFormNoConfirm();
+        }
+
+        // 新規作成（クリア）
+        function clearForm() {
+            if(!confirm("入力内容をクリアして新規作成しますか？\n(Are you sure you want to start a new assessment?)")) return;
+            clearFormNoConfirm();
+        }
+
+        function clearFormNoConfirm() {
+            inputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    if(id.startsWith('vas-')) { el.value = 5; el.dispatchEvent(new Event('input')); }
+                    else if(id === 'assessment-date') { el.valueAsDate = new Date(); }
+                    else { el.value = ''; }
+                }
+            });
+            document.getElementById('load-status').classList.add('hidden');
+            localStorage.removeItem(TEMP_STORAGE_KEY);
+            document.getElementById('restore-banner').classList.add('hidden');
+            document.getElementById('sub-id').focus();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('assessment-date').valueAsDate = new Date();
+            
+            // スライダー横の数値表示を同期
+            ['vas-pre-1','vas-post-1','vas-pre-2','vas-post-2','vas-pre-3','vas-post-3','vas-pre-4','vas-post-4'].forEach(id => {
+                const el = document.getElementById(id);
+                const targetId = id.replace('vas-','v-').replace('pre-','p').replace('post-','po');
+                el.addEventListener('input', () => { document.getElementById(targetId).innerText = el.value; });
+            });
+
+            // 全入力項目にオートセーブを紐付け
+            inputIds.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.addEventListener('input', saveTempData);
+            });
+
+            // 起動時に未保存データがあるかチェック
+            const tempData = localStorage.getItem(TEMP_STORAGE_KEY);
+            if(tempData) {
+                const parsed = JSON.parse(tempData);
+                // 単なる初期状態(空欄と5)でなければバナーを表示
+                const hasMeaningfulData = Object.keys(parsed).some(k => {
+                    return parsed[k] !== '' && parsed[k] !== '5' && !k.includes('date');
+                });
+                if(hasMeaningfulData) {
+                    document.getElementById('restore-banner').classList.remove('hidden');
+                }
+            }
         });
 
-        // --- テスト解説データ (A-F) ---
+        // --- テスト解説データ (略 - 変更なし) ---
         const testInfoData = {
-            'A': {
-                title: 'Test A: 立位体前屈 (FFD)',
-                desc: '膝を伸ばした状態で前屈し、床から指先までの距離（cm）を測定します。届かない場合はマイナス、手のひらがつく等通り過ぎる場合はプラス評価とします。後面チェーン（Posterior Chain）全体の連動性を評価します。',
-                rationale: '【胸腰椎移行部ハブへの介入効果】\nT12-L1領域の胸腰筋膜や広背筋のテンションが最適化されることで、下位交差性症候群における腰部の保護的スパズム（脳の無意識のブレーキ）が解除され、骨盤の前傾とハムストリングスの伸張が即座に引き出されます。'
-            },
-            'B': {
-                title: 'Test B: 肩関節屈曲 (度)',
-                desc: '仰臥位または立位で腕を前方から頭上へ限界まで挙上（バンザイ）した角度を左右別に測定します。肩甲帯および胸椎の伸展モビリティの左右差を評価します。',
-                rationale: '【鎖骨下ハブへの介入効果】\n上位交差性症候群で短縮・過緊張を起こしやすい小胸筋・大胸筋上の皮膚受容器を持続刺激することで、相反性神経抑制が正常化します。肩甲骨が正しい後傾・上方回旋ポジションに収まり、インピンジメント（詰まり）なく挙上角度が拡大します。'
-            },
-            'C': {
-                title: 'Test C: 座位胸郭回旋 (度)',
-                desc: '椅子に座り骨盤を完全に固定した状態で、肩に担いだバーとともに「右回旋」「左回旋」それぞれの限界可動角度を測定し、回旋の非対称性を評価します。',
-                rationale: '【胸腰椎・鎖骨下ハブの統合効果】\n Joint-by-Jointセオリーにおいて、本来高い可動性を持つべき「胸椎」のロックが外れるかを検証します。大胸筋の過緊張緩和と、胸腰椎移行部のテンション解放が組み合わさることで、ゴルフや野球など回旋系スポーツの出力に直結する滑らかなローテーションが回復します。'
-            },
-            'D': {
-                title: 'Test D: 荷重位足関節背屈 (cm)',
-                desc: '壁に向かって立ち、踵を床から浮かせずに膝を壁につけられる「つま先から壁までの最大距離（cm）」を測定します。荷重下での足関節のモビリティを評価します。',
-                rationale: '【前脛骨筋ハブへの介入効果】\n足関節の背屈動作時における、距骨の後方滑り（ロール＆グライド）のブレーキを解除します。前脛骨筋起始部からのクリアな感覚入力により足関節戦略（Ankle Strategy）が最適化され、スクワット時の過回内（Over-pronation）やニーイン（Knee-in）を防ぎます。'
-            },
-            'E': {
-                title: 'Test E: 閉眼片脚立位 (秒)',
-                desc: '視覚情報を完全に遮断し、右足・左足をそれぞれ軸足とした状態で姿勢を保持できる時間（秒）を測定し、左右の固有受容感覚と自律的姿勢制御のバランスを評価します。',
-                rationale: '【中枢神経系のエラー修正】\n視覚に頼れない状況下では、足裏や関節からの体性感覚フィードバックへの依存度が高まります。3つのハブから脳へクリアな安全信号（ノイズのない求心性情報）が送られることで小脳での身体状態推定が安定し、重心動揺が劇的に減少（タイムが延長）します。'
-            },
-            'F': {
-                title: 'Test F: CMJ 垂直跳び出力 (cm)',
-                desc: '反動を用いた垂直跳び（Counter Movement Jump）を左右片脚、または左右の主導バランスを意識して測定し、全身のキネティックチェーン（運動連鎖）における出力の非対称性を評価します。',
-                rationale: '【相反性神経抑制と連動性の正常化】\n関節ごとのモビリティとスタビリティの破綻が修正されることで、各関節の不必要なブレーキ（過緊張）が外ります。結果として、下肢で生み出した床反力が、体幹を抜けることなくロスなく上方へ伝達されるようになり、筋力トレーニングを行わずとも即座に出力が向上します。'
-            }
+            'A': { title: 'Test A: 立位体前屈 (FFD)', desc: '膝を伸ばした状態で前屈し、床から指先までの距離（cm）を測定します。届かない場合はマイナス、手のひらがつく等通り過ぎる場合はプラス評価とします。後面チェーン（Posterior Chain）全体の連動性を評価します。', rationale: '【胸腰椎移行部ハブへの介入効果】\nT12-L1領域の胸腰筋膜や広背筋のテンションが最適化されることで、下位交差性症候群における腰部の保護的スパズム（脳の無意識のブレーキ）が解除され、骨盤の前傾とハムストリングスの伸張が即座に引き出されます。' },
+            'B': { title: 'Test B: 肩関節屈曲 (度)', desc: '仰臥位または立位で腕を前方から頭上へ限界まで挙上（バンザイ）した角度を左右別に測定します。肩甲帯および胸椎の伸展モビリティの左右差を評価します。', rationale: '【鎖骨下ハブへの介入効果】\n上位交差性症候群で短縮・過緊張を起こしやすい小胸筋・大胸筋上の皮膚受容器を持続刺激することで、相反性神経抑制が正常化します。肩甲骨が正しい後傾・上方回旋ポジションに収まり、インピンジメント（詰まり）なく挙上角度が拡大します。' },
+            'C': { title: 'Test C: 座位胸郭回旋 (度)', desc: '椅子に座り骨盤を完全に固定した状態で、肩に担いだバーとともに「右回旋」「左回旋」それぞれの限界可動角度を測定し、回旋の非対称性を評価します。', rationale: '【胸腰椎・鎖骨下ハブの統合効果】\n Joint-by-Jointセオリーにおいて、本来高い可動性を持つべき「胸椎」のロックが外れるかを検証します。大胸筋の過緊張緩和と、胸腰椎移行部のテンション解放が組み合わさることで、ゴルフや野球など回旋系スポーツの出力に直結する滑らかなローテーションが回復します。' },
+            'D': { title: 'Test D: 荷重位足関節背屈 (cm)', desc: '壁に向かって立ち、踵を床から浮かせずに膝を壁につけられる「つま先から壁までの最大距離（cm）」を測定します。荷重下での足関節のモビリティを評価します。', rationale: '【前脛骨筋ハブへの介入効果】\n足関節の背屈動作時における、距骨の後方滑り（ロール＆グライド）のブレーキを解除します。前脛骨筋起始部からのクリアな感覚入力により足関節戦略（Ankle Strategy）が最適化され、スクワット時の過回内（Over-pronation）やニーイン（Knee-in）を防ぎます。' },
+            'E': { title: 'Test E: 閉眼片脚立位 (秒)', desc: '視覚情報を完全に遮断し、右足・左足をそれぞれ軸足とした状態で姿勢を保持できる時間（秒）を測定し、左右の固有受容感覚と自律的姿勢制御のバランスを評価します。', rationale: '【中枢神経系のエラー修正】\n視覚に頼れない状況下では、足裏や関節からの体性感覚フィードバックへの依存度が高まります。3つのハブから脳へクリアな安全信号（ノイズのない求心性情報）が送られることで小脳での身体状態推定が安定し、重心動揺が劇的に減少（タイムが延長）します。' },
+            'F': { title: 'Test F: CMJ 垂直跳び出力 (cm)', desc: '反動を用いた垂直跳び（Counter Movement Jump）を左右片脚、または左右の主導バランスを意識して測定し、全身のキネティックチェーン（運動連鎖）における出力の非対称性を評価します。', rationale: '【相反性神経抑制と連動性の正常化】\n関節ごとのモビリティとスタビリティの破綻が修正されることで、各関節の不必要なブレーキ（過緊張）が外ります。結果として、下肢で生み出した床反力が、体幹を抜けることなくロスなく上方へ伝達されるようになり、筋力トレーニングを行わずとも即座に出力が向上します。' }
         };
-
-        function openTestInfoModal(testKey) {
-            const data = testInfoData[testKey];
-            document.getElementById('test-info-title').innerText = data.title;
-            document.getElementById('test-info-desc').innerText = data.desc;
-            document.getElementById('test-info-rationale').innerText = data.rationale;
-            document.getElementById('test-info-modal').classList.remove('hidden');
-        }
+        function openTestInfoModal(testKey) { const data = testInfoData[testKey]; document.getElementById('test-info-title').innerText = data.title; document.getElementById('test-info-desc').innerText = data.desc; document.getElementById('test-info-rationale').innerText = data.rationale; document.getElementById('test-info-modal').classList.remove('hidden'); }
         function closeTestInfoModal() { document.getElementById('test-info-modal').classList.add('hidden'); }
-
-        // --- データ管理関数 ---
         function getStorageData() { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
 
+        // --- 以下データ保存・グラフ描画系 ---
         function loadSubjectData() {
             const id = document.getElementById('sub-id').value.trim();
             if (!id) return;
             const allData = getStorageData();
-            
             if (allData[id]) {
                 document.getElementById('sub-name').value = allData[id].info.name || '';
                 document.getElementById('sub-birth').value = allData[id].info.birth || '';
@@ -456,6 +508,7 @@
                 const statusEl = document.getElementById('load-status');
                 statusEl.innerText = `DATA LOADED: ${allData[id].info.name} (${currentSubjectHistory.length} sessions)`;
                 statusEl.classList.remove('hidden');
+                saveTempData(); // ロード後も一時保存
             } else {
                 document.getElementById('load-status').innerText = "NEW SUBJECT INITIALIZED";
                 document.getElementById('load-status').classList.remove('hidden');
@@ -465,7 +518,6 @@
 
         function openSearchModal() { document.getElementById('search-modal').classList.remove('hidden'); document.getElementById('modal-search-query').value = ''; filterSearchList(); }
         function closeSearchModal() { document.getElementById('search-modal').classList.add('hidden'); }
-
         function filterSearchList() {
             const query = document.getElementById('modal-search-query').value.toLowerCase().trim();
             const allData = getStorageData();
@@ -479,34 +531,21 @@
                     count++;
                     const tr = document.createElement('tr');
                     tr.className = "border-b border-gray-800 hover:bg-[#161618] transition";
-                    tr.innerHTML = `
-                        <td class="p-3 font-mono text-cyan-500">${id}</td>
-                        <td class="p-3 text-gray-200">${name}</td>
-                        <td class="p-3 text-gray-500 text-[10px] uppercase">${info.sport || ''}</td>
-                        <td class="p-3 text-center"><button onclick="selectSubject('${id}')" class="bg-gray-800 border border-gray-600 text-gray-300 px-3 py-1 rounded text-[10px] hover:text-white transition uppercase tracking-wider">Select</button></td>
-                    `;
+                    tr.innerHTML = `<td class="p-3 font-mono text-cyan-500">${id}</td><td class="p-3 text-gray-200">${name}</td><td class="p-3 text-gray-500 text-[10px] uppercase">${info.sport || ''}</td><td class="p-3 text-center"><button onclick="selectSubject('${id}')" class="bg-gray-800 border border-gray-600 text-gray-300 px-3 py-1 rounded text-[10px] hover:text-white transition uppercase tracking-wider">Select</button></td>`;
                     tbody.appendChild(tr);
                 }
             }
             const emptyMsg = document.getElementById('modal-empty-msg');
             count === 0 ? emptyMsg.classList.remove('hidden') : emptyMsg.classList.add('hidden');
         }
-
         function selectSubject(id) { document.getElementById('sub-id').value = id; loadSubjectData(); closeSearchModal(); }
-
         function switchTab(tabId) {
             document.getElementById('tab-input').classList.add('hidden');
             document.getElementById('tab-dashboard').classList.add('hidden');
             document.getElementById('btn-input').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-transparent text-gray-500 hover:text-gray-300 transition";
             document.getElementById('btn-dashboard').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-transparent text-gray-500 hover:text-gray-300 transition";
-
-            if (tabId === 'input') {
-                document.getElementById('tab-input').classList.remove('hidden');
-                document.getElementById('btn-input').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-cyan-500 text-cyan-400 font-medium transition";
-            } else {
-                document.getElementById('tab-dashboard').classList.remove('hidden');
-                document.getElementById('btn-dashboard').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-cyan-500 text-cyan-400 font-medium transition";
-            }
+            if (tabId === 'input') { document.getElementById('tab-input').classList.remove('hidden'); document.getElementById('btn-input').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-cyan-500 text-cyan-400 font-medium transition"; } 
+            else { document.getElementById('tab-dashboard').classList.remove('hidden'); document.getElementById('btn-dashboard').className = "px-6 py-3 text-sm tracking-widest uppercase border-b-2 border-cyan-500 text-cyan-400 font-medium transition"; }
         }
 
         function saveAndGenerateGraphs() {
@@ -516,61 +555,30 @@
             const sport = document.getElementById('sub-sport').value.trim() || 'N/A';
             const date = document.getElementById('assessment-date').value;
 
-            // 6 Metrics (左右拡張対応データ取得)
-            const preA = parseFloat(document.getElementById('pre-a').value) || 0;
-            const postA = parseFloat(document.getElementById('post-a').value) || 0;
+            const preA = parseFloat(document.getElementById('pre-a').value) || 0; const postA = parseFloat(document.getElementById('post-a').value) || 0;
+            const preB_R = parseFloat(document.getElementById('pre-b-r').value) || 0; const postB_R = parseFloat(document.getElementById('post-b-r').value) || 0;
+            const preB_L = parseFloat(document.getElementById('pre-b-l').value) || 0; const postB_L = parseFloat(document.getElementById('post-b-l').value) || 0;
+            const preC_R = parseFloat(document.getElementById('pre-c-r').value) || 0; const postC_R = parseFloat(document.getElementById('post-c-r').value) || 0;
+            const preC_L = parseFloat(document.getElementById('pre-c-l').value) || 0; const postC_L = parseFloat(document.getElementById('post-c-l').value) || 0;
+            const preD = parseFloat(document.getElementById('pre-d').value) || 0; const postD = parseFloat(document.getElementById('post-d').value) || 0;
+            const preE_R = parseFloat(document.getElementById('pre-e-r').value) || 0; const postE_R = parseFloat(document.getElementById('post-e-r').value) || 0;
+            const preE_L = parseFloat(document.getElementById('pre-e-l').value) || 0; const postE_L = parseFloat(document.getElementById('post-e-l').value) || 0;
+            const preF_R = parseFloat(document.getElementById('pre-f-r').value) || 0; const postF_R = parseFloat(document.getElementById('post-f-r').value) || 0;
+            const preF_L = parseFloat(document.getElementById('pre-f-l').value) || 0; const postF_L = parseFloat(document.getElementById('post-f-l').value) || 0;
             
-            const preB_R = parseFloat(document.getElementById('pre-b-r').value) || 0;
-            const postB_R = parseFloat(document.getElementById('post-b-r').value) || 0;
-            const preB_L = parseFloat(document.getElementById('pre-b-l').value) || 0;
-            const postB_L = parseFloat(document.getElementById('post-b-l').value) || 0;
+            const vp1 = parseFloat(document.getElementById('vas-pre-1').value); const vpo1 = parseFloat(document.getElementById('vas-post-1').value);
+            const vp2 = parseFloat(document.getElementById('vas-pre-2').value); const vpo2 = parseFloat(document.getElementById('vas-post-2').value);
+            const vp3 = parseFloat(document.getElementById('vas-pre-3').value); const vpo3 = parseFloat(document.getElementById('vas-post-3').value);
+            const vp4 = parseFloat(document.getElementById('vas-pre-4').value); const vpo4 = parseFloat(document.getElementById('vas-post-4').value);
 
-            const preC_R = parseFloat(document.getElementById('pre-c-r').value) || 0;
-            const postC_R = parseFloat(document.getElementById('post-c-r').value) || 0;
-            const preC_L = parseFloat(document.getElementById('pre-c-l').value) || 0;
-            const postC_L = parseFloat(document.getElementById('post-c-l').value) || 0;
-
-            const preD = parseFloat(document.getElementById('pre-d').value) || 0;
-            const postD = parseFloat(document.getElementById('post-d').value) || 0;
-            
-            const preE_R = parseFloat(document.getElementById('pre-e-r').value) || 0;
-            const postE_R = parseFloat(document.getElementById('post-e-r').value) || 0;
-            const preE_L = parseFloat(document.getElementById('pre-e-l').value) || 0;
-            const postE_L = parseFloat(document.getElementById('post-e-l').value) || 0;
-
-            const preF_R = parseFloat(document.getElementById('pre-f-r').value) || 0;
-            const postF_R = parseFloat(document.getElementById('post-f-r').value) || 0;
-            const preF_L = parseFloat(document.getElementById('pre-f-l').value) || 0;
-            const postF_L = parseFloat(document.getElementById('post-f-l').value) || 0;
-
-            const vp1 = parseFloat(document.getElementById('vas-pre-1').value);
-            const vpo1 = parseFloat(document.getElementById('vas-post-1').value);
-            const vp2 = parseFloat(document.getElementById('vas-pre-2').value);
-            const vpo2 = parseFloat(document.getElementById('vas-post-2').value);
-            const vp3 = parseFloat(document.getElementById('vas-pre-3').value);
-            const vpo3 = parseFloat(document.getElementById('vas-post-3').value);
-            const vp4 = parseFloat(document.getElementById('vas-pre-4').value);
-            const vpo4 = parseFloat(document.getElementById('vas-post-4').value);
-
-            const sessionRecord = { 
-                date, 
-                preA, postA, 
-                preB_R, postB_R, preB_L, postB_L,
-                preC_R, postC_R, preC_L, postC_L,
-                preD, postD, 
-                preE_R, postE_R, preE_L, postE_L,
-                preF_R, postF_R, preF_L, postF_L,
-                vp1, vpo1, vp2, vpo2, vp3, vpo3, vp4, vpo4 
-            };
+            const sessionRecord = { date, preA, postA, preB_R, postB_R, preB_L, postB_L, preC_R, postC_R, preC_L, postC_L, preD, postD, preE_R, postE_R, preE_L, postE_L, preF_R, postF_R, preF_L, postF_L, vp1, vpo1, vp2, vpo2, vp3, vpo3, vp4, vpo4 };
 
             const allData = getStorageData();
             if (!allData[id]) allData[id] = { info: {}, sessions: [] };
             allData[id].info = { name, birth, sport };
-            
             const existingIndex = allData[id].sessions.findIndex(r => r.date === date);
             if (existingIndex >= 0) allData[id].sessions[existingIndex] = sessionRecord;
             else allData[id].sessions.push(sessionRecord);
-            
             allData[id].sessions.sort((a, b) => new Date(a.date) - new Date(b.date));
             localStorage.setItem(STORAGE_KEY, JSON.stringify(allData));
             currentSubjectHistory = allData[id].sessions;
@@ -580,34 +588,31 @@
             document.getElementById('print-date').innerText = date;
             document.getElementById('print-meta').innerText = `${sport} / DOB: ${birth}`;
 
+            // 保存成功時にオートセーブ用の一時データをクリア（次回起動時に復元バナーを出さないため）
+            localStorage.removeItem(TEMP_STORAGE_KEY);
+            document.getElementById('restore-banner').classList.add('hidden');
+
             switchTab('dashboard');
 
-            // Bar Charts (単一項目と左右拡張項目を正確に描き分け)
             renderBarChart('chartA', 'FFD (cm)', preA, postA, 'rgba(6, 182, 212, 0.8)');
             renderBarChartLR('chartB', 'Shldr Flex (°)', preB_R, postB_R, preB_L, postB_L, 'rgba(6, 182, 212, 0.8)');
             renderBarChartLR('chartC', 'Thoracic Rot (°)', preC_R, postC_R, preC_L, postC_L, 'rgba(6, 182, 212, 0.8)');
             renderBarChart('chartD', 'Knee-Wall (cm)', preD, postD, 'rgba(6, 182, 212, 0.8)');
-            
             renderBarChartLR('chartE', 'Stance (sec)', preE_R, postE_R, preE_L, postE_L, 'rgba(236, 72, 153, 0.8)'); 
             renderBarChartLR('chartF', 'CMJ Output (cm)', preF_R, postF_R, preF_L, postF_L, 'rgba(16, 185, 129, 0.8)');
-            
             renderRadarChart([vp1, vp2, vp3, vp4], [vpo1, vpo2, vpo3, vpo4]);
             renderHistoryChart(currentSubjectHistory);
             
             alert('Data Saved Successfully.');
         }
 
-        // --- データのエクスポート・インポート ---
         function exportData() {
             const data = localStorage.getItem(STORAGE_KEY);
             if (!data || data === '{}') { alert('エクスポートするデータがありません。'); return; }
             const blob = new Blob([data], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
             a.download = `elite_performance_v5_backup_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+            a.click(); URL.revokeObjectURL(a.href);
         }
 
         function importData(event) {
@@ -622,114 +627,53 @@
                     location.reload();
                 } catch (err) { alert('ファイルの形式が正しくありません。'); }
             };
-            reader.readAsText(file);
-            event.target.value = '';
+            reader.readAsText(file); event.target.value = '';
         }
 
-        // 単一項目用バーチャート
         function renderBarChart(canvasId, label, pre, post, color) {
             const ctx = document.getElementById(canvasId).getContext('2d');
-            let diff = post - pre;
-            let percent = pre !== 0 ? ((diff / pre) * 100).toFixed(1) : 0;
-            let titleText = `${label}`;
-            
-            if (diff > 0) titleText += ` [+${Math.abs(percent)}% UP]`;
-            else if (diff < 0) titleText += ` [${percent}% DOWN]`;
-
+            let diff = post - pre; let percent = pre !== 0 ? ((diff / pre) * 100).toFixed(1) : 0;
+            let titleText = `${label} [${diff > 0 ? '+' : ''}${percent}%]`;
             if (charts[canvasId]) charts[canvasId].destroy();
             charts[canvasId] = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['PRE', 'POST'],
-                    datasets: [{ data: [pre, post], backgroundColor: ['rgba(255, 255, 255, 0.1)', color], borderRadius: 2 }]
-                },
+                type: 'bar', data: { labels: ['PRE', 'POST'], datasets: [{ data: [pre, post], backgroundColor: ['rgba(255, 255, 255, 0.1)', color], borderRadius: 2 }] },
                 options: { responsive: true, plugins: { title: { display: true, text: titleText, font: { size: 10, weight: '300' }, color: '#d1d5db' }, legend: { display: false } }, scales: { y: { beginAtZero: true } } }
             });
         }
-
-        // 左右拡張用の2連比較バーチャート
         function renderBarChartLR(canvasId, label, preR, postR, preL, postL, color) {
             const ctx = document.getElementById(canvasId).getContext('2d');
-            let diffR = postR - preR;
-            let percentR = preR !== 0 ? ((diffR / preR) * 100).toFixed(1) : 0;
-            let diffL = postL - preL;
-            let percentL = preL !== 0 ? ((diffL / preL) * 100).toFixed(1) : 0;
-            
+            let diffR = postR - preR; let percentR = preR !== 0 ? ((diffR / preR) * 100).toFixed(1) : 0;
+            let diffL = postL - preL; let percentL = preL !== 0 ? ((diffL / preL) * 100).toFixed(1) : 0;
             let titleText = `${label} (右:${diffR >= 0 ? '+' : ''}${percentR}% | 左:${diffL >= 0 ? '+' : ''}${percentL}%)`;
-
             if (charts[canvasId]) charts[canvasId].destroy();
             charts[canvasId] = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: ['右 (R)', '左 (L)'],
-                    datasets: [
-                        { label: 'PRE', data: [preR, preL], backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 2 },
-                        { label: 'POST', data: [postR, postL], backgroundColor: color, borderRadius: 2 }
-                    ]
-                },
-                options: { 
-                    responsive: true, 
-                    plugins: { 
-                        title: { display: true, text: titleText, font: { size: 10, weight: '300' }, color: '#d1d5db' }, 
-                        legend: { display: true, labels: { boxWidth: 8, font: { size: 8 } } } 
-                    }, 
-                    scales: { y: { beginAtZero: true } } 
-                }
+                data: { labels: ['右 (R)', '左 (L)'], datasets: [{ label: 'PRE', data: [preR, preL], backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 2 }, { label: 'POST', data: [postR, postL], backgroundColor: color, borderRadius: 2 }] },
+                options: { responsive: true, plugins: { title: { display: true, text: titleText, font: { size: 10, weight: '300' }, color: '#d1d5db' }, legend: { display: true, labels: { boxWidth: 8, font: { size: 8 } } } }, scales: { y: { beginAtZero: true } } }
             });
         }
-
         function renderRadarChart(preVals, postVals) {
             const ctx = document.getElementById('radarVAS').getContext('2d');
             if (charts['radarVAS']) charts['radarVAS'].destroy();
             charts['radarVAS'] = new Chart(ctx, {
                 type: 'radar',
-                data: {
-                    labels: ['Mobility', 'Stability', 'Kinetic Chain', 'Sensorimotor'],
-                    datasets: [
-                        { label: 'PRE', data: preVals, backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.3)', borderWidth: 1 },
-                        { label: 'POST', data: postVals, backgroundColor: 'rgba(6, 182, 212, 0.2)', borderColor: 'rgba(6, 182, 212, 1)', borderWidth: 2, pointBackgroundColor: 'rgba(6, 182, 212, 1)' }
-                    ]
-                },
+                data: { labels: ['Mobility', 'Stability', 'Kinetic Chain', 'Sensorimotor'], datasets: [{ label: 'PRE', data: preVals, backgroundColor: 'rgba(255, 255, 255, 0.05)', borderColor: 'rgba(255, 255, 255, 0.3)', borderWidth: 1 }, { label: 'POST', data: postVals, backgroundColor: 'rgba(6, 182, 212, 0.2)', borderColor: 'rgba(6, 182, 212, 1)', borderWidth: 2, pointBackgroundColor: 'rgba(6, 182, 212, 1)' }] },
                 options: { responsive: true, plugins: { legend: { labels: { boxWidth: 10, font: {size: 10} } } }, scales: { r: { min: 1, max: 10, ticks: { stepSize: 2, display: false }, angleLines: { color: 'rgba(255,255,255,0.1)' }, grid: { color: 'rgba(255,255,255,0.1)' } } } }
             });
         }
-
-        // 左右のバランス推移が見える歴史トラッキンググラフ
         function renderHistoryChart(historyData) {
             const ctx = document.getElementById('historyChart').getContext('2d');
             const labels = historyData.map(d => d.date.slice(5)); 
-            
             const ffdData = historyData.map(d => d.postA);
-            const jumpDataR = historyData.map(d => d.postF_R || d.postF || 0);
-            const jumpDataL = historyData.map(d => d.postF_L || 0);
-            const stanceDataR = historyData.map(d => d.postE_R || d.postE || 0);
-            const stanceDataL = historyData.map(d => d.postE_L || 0);
-
+            const jumpDataR = historyData.map(d => d.postF_R || d.postF || 0); const jumpDataL = historyData.map(d => d.postF_L || 0);
+            const stanceDataR = historyData.map(d => d.postE_R || d.postE || 0); const stanceDataL = historyData.map(d => d.postE_L || 0);
             if (charts['historyChart']) charts['historyChart'].destroy();
             charts['historyChart'] = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'FFD (cm)', data: ffdData, borderColor: 'rgba(6, 182, 212, 1)', tension: 0.3, yAxisID: 'y' },
-                        { label: 'CMJ 右 (cm)', data: jumpDataR, borderColor: 'rgba(16, 185, 129, 1)', tension: 0.3, yAxisID: 'y' },
-                        { label: 'CMJ 左 (cm)', data: jumpDataL, borderColor: 'rgba(16, 185, 129, 0.5)', borderDash: [2, 2], tension: 0.3, yAxisID: 'y' },
-                        { label: 'Stance 右 (sec)', data: stanceDataR, borderColor: 'rgba(236, 72, 153, 1)', tension: 0.3, borderDash: [4, 4], yAxisID: 'y1' },
-                        { label: 'Stance 左 (sec)', data: stanceDataL, borderColor: 'rgba(236, 72, 153, 0.5)', tension: 0.3, borderDash: [2, 4], yAxisID: 'y1' }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { labels: { boxWidth: 10, font: {size: 10} } } },
-                    scales: {
-                        y: { type: 'linear', display: true, position: 'left' },
-                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
-                    }
-                }
+                data: { labels: labels, datasets: [ { label: 'FFD (cm)', data: ffdData, borderColor: 'rgba(6, 182, 212, 1)', tension: 0.3, yAxisID: 'y' }, { label: 'CMJ 右 (cm)', data: jumpDataR, borderColor: 'rgba(16, 185, 129, 1)', tension: 0.3, yAxisID: 'y' }, { label: 'CMJ 左 (cm)', data: jumpDataL, borderColor: 'rgba(16, 185, 129, 0.5)', borderDash: [2, 2], tension: 0.3, yAxisID: 'y' }, { label: 'Stance 右 (sec)', data: stanceDataR, borderColor: 'rgba(236, 72, 153, 1)', tension: 0.3, borderDash: [4, 4], yAxisID: 'y1' }, { label: 'Stance 左 (sec)', data: stanceDataL, borderColor: 'rgba(236, 72, 153, 0.5)', tension: 0.3, borderDash: [2, 4], yAxisID: 'y1' } ] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { boxWidth: 10, font: {size: 10} } } }, scales: { y: { type: 'linear', display: true, position: 'left' }, y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } } } }
             });
         }
-
-        // --- Placement モーダル操作関数 ---
         function openPlacementModal() { document.getElementById('placement-modal').classList.remove('hidden'); }
         function closePlacementModal() { document.getElementById('placement-modal').classList.add('hidden'); }
     </script>
